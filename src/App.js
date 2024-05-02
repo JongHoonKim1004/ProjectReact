@@ -16,6 +16,7 @@ import Faq from './Component/Faq';
 import Voc from './Component/voc';
 import Login from './Component/Login';
 import Register_terms from './Component/Register_terms';
+import Register_forms from './Component/Register_forms';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           {/** 로그인, 로그아웃 , 회원가입 등 */}
           <Route path="/login" element={<HeaderAndFooter><Login/></HeaderAndFooter>}/>
           <Route path="/register_terms" element={<HeaderAndFooter><Register_terms/></HeaderAndFooter>}/>
+          <Route path='/register_forms' element={<HeaderAndFooter><Register_forms/></HeaderAndFooter>}/>
 
           {/** 마이페이지 */}
           <Route path="/myInfo" element={<HeaderAndFooter><MyInfo/></HeaderAndFooter>}/>

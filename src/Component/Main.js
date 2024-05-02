@@ -9,9 +9,10 @@ import {
   ListGroup,
   Row,
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Main = () => {
+  const navigation = useNavigate();
   return (
     <div>
       <Container>
@@ -108,9 +109,11 @@ const Main = () => {
                           variant="primary"
                           type="button"
                           style={{ width: "100%", textAlign: "center" }}
+                          onClick={() => navigation('/register_terms')}
+
                         >
                           <Link
-                            to="/register"
+                            
                             style={{ color: "white", textDecoration: "none" }}
                           >
                             회원가입
@@ -128,9 +131,11 @@ const Main = () => {
                             width: "100%",
                             textAlign: "center",
                           }}
+                          onClick={() => navigation('/idFind')}
+
                         >
                           <Link
-                            to="/idFind"
+                            
                             style={{ color: "white", textDecoration: "none" }}
                           >
                             아이디 찾기
@@ -142,9 +147,11 @@ const Main = () => {
                           variant="primary"
                           type="button"
                           style={{ width: "100%", textAlign: "center" }}
+                          onClick={() => navigation('/pwFind')}
+
                         >
                           <Link
-                            to="/passwordFind"
+                            
                             style={{ color: "white", textDecoration: "none" }}
                           >
                             비밀번호 찾기
