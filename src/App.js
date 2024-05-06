@@ -17,6 +17,11 @@ import Voc from './Component/voc';
 import Login from './Component/Login';
 import Register_terms from './Component/Register_terms';
 import Register_forms from './Component/Register_forms';
+import Register_result from './Component/Register_result';
+import UsernameCheck from './Component/UsernameCheck';
+import Post from './Component/daum/Post';
+import AdminMain from './Component/admin/AdminMain';
+
 
 
 function App() {
@@ -30,6 +35,11 @@ function App() {
           <Route path="/login" element={<HeaderAndFooter><Login/></HeaderAndFooter>}/>
           <Route path="/register_terms" element={<HeaderAndFooter><Register_terms/></HeaderAndFooter>}/>
           <Route path='/register_forms' element={<HeaderAndFooter><Register_forms/></HeaderAndFooter>}/>
+          <Route path="/register_result" element={<HeaderAndFooter><Register_result/></HeaderAndFooter>}/>
+
+          {/** 회원가입 폼 내 아이디 중복확인, 주소 api */}
+          <Route path="/idCheck" element={<UsernameCheck/>}/>
+          <Route path="/addressSearch" element={<Post/>}/>
 
           {/** 마이페이지 */}
           <Route path="/myInfo" element={<HeaderAndFooter><MyInfo/></HeaderAndFooter>}/>
@@ -42,6 +52,10 @@ function App() {
           <Route path='/notice' element={<HeaderAndFooter><Notice/></HeaderAndFooter>}/>
           <Route path="/faq" element={<HeaderAndFooter><Faq/></HeaderAndFooter>}/>
           <Route path="/voc" element={<HeaderAndFooter><Voc/></HeaderAndFooter>}/>
+
+
+          {/** 관리자 페이지 전체 */}
+          <Route path="/adminMain" element={<AdminMain/>}/>
         </Routes>
       </div>
     

@@ -2,18 +2,19 @@ import React, { useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import 'react-datepicker/dist/react-datepicker.css';
 import ReactDatePicker from 'react-datepicker';
+import { addDays } from 'date-fns';
 
 const Register_forms = () => {
   // 유저 정보 상태 설정
   const [username, setUsername] = useState("");
+  const [usernameChecked, setUsernameChecked] = useState();
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
   const [zipNo, setZipNo] = useState();
   const [addr, setAddr] = useState();
-  const [addrDetail, setAddrDetail] = useState();
-  const [birth, setBirth] = useState();
-
+  const [birth, setBirth] = useState(new Date());
+  const [occupation, setOccupation] = useState();
 
   const handleUsername = (e) => {
     setUsername(e.target.value);
@@ -33,18 +34,53 @@ const Register_forms = () => {
   const handleAddr = (e) => {
     setAddr(e.target.value);
   }
-  const handleAddrDetail = (e) => {
-    setAddrDetail(e.target.value);
+
+  const handleBirth = (date) => {
+    setBirth(date);
+    setFormattedBirth(formatBirth(date));
   }
-  const handleBirth = (e) => {
-    setBirth(e.target.value);
+  const handleOccupation = (e) => {
+    setOccupation(e.target.value);
   }
+
+  // 새로 연 창에서 데이터 받을 수 있도록 설정
+  window.usernameCheck = (username) => {
+    setUsernameChecked(username);
+    console.log("Username Checked : ", username);
+  }
+  window.getAddr = (data) => {
+    setAddr(data.address);
+    setZipNo(data.zonecode);
+
+    console.log(data);
+  }
+
+  // 생일 input 변경
+  const formatBirth = (date) => {
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = '' + d.getFullYear();
+
+    if(month.length < 2){
+      month = '0' + month;
+    }
+    if(day.length < 2){
+      day = '0' + day;
+    }
+
+    return [year, month, day].join('');
+  }
+
+  // DB로 전송 될 생일 정보
+  const [formattedBirth,setFormattedBirth] = useState(formatBirth(new Date()));
+
 
   // 아이디 중복확인
   const idCheck = (e) => {
     setUsername(e.target.value);
     if(username !== ""){
-      window.open(`./idCheck?username=${username}`, "_blank", "width=500, height=400, left=100, top=100")
+      window.open(`./idCheck?username=${username}`, "_blank", "width=700, height=500, left=100, top=100")
     } else {
       e.preventDefault();
       alert("아이디를 입력해주세요");
@@ -54,7 +90,7 @@ const Register_forms = () => {
 
   // 다음 주소 API 호출
   const findZipNo = (e) => {
-    setZipNo(document.getElementById("zipNo").value);
+    window.open(`./addressSearch`,"_blank","width=700, height=500, left=100, top=100")
     
   }
 
@@ -86,64 +122,118 @@ const Register_forms = () => {
                 * 표시는 필수 입력 사항입니다.
               </Form.Group>
               <Form.Group as={Row} className='mt-3 mb-3'>
-                <Form.Label column sm="2">아이디 {`(`}이메일{`)`}</Form.Label>
-                <Col sm="10">
+                <Form.Label column sm="3">아이디 {`(`}이메일{`)`} {`*`}</Form.Label>
+                <Col sm="9">
                   <Form.Control type='email' name="username" id="username" placeholder='example@example.com' value={username} onChange={handleUsername}/>
                 </Col>
               </Form.Group>
               <Form.Group className='mb-5' as={Row}>
-                <Col sm="2"></Col>
-                <Col sm="10">
+                <Col sm="3"></Col>
+                <Col sm="9">
                   <Button variant='primary' onClick={idCheck}>중복 확인</Button>
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className='mb-3 mt-1'>
-                <Form.Label column sm="2">이름</Form.Label>
-                <Col sm="10">
+                <Form.Label column sm="3">이름 {`*`}</Form.Label>
+                <Col sm="9">
                   <Form.Control name="name" id="name" value={name} onChange={handleName}/>
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className='mb-3'>
-                <Form.Label column sm="2">비밀번호</Form.Label>
-                <Col sm='10'>
+                <Form.Label column sm="3">비밀번호 {`*`}</Form.Label>
+                <Col sm='9'>
                   <Form.Control name="password" type="password" id="password" value={password} onChange={handlePassword}/>
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className="mb-3">
-                <Form.Label column sm="2">비밀번호 확인</Form.Label>
-                <Col sm="10">
+                <Form.Label column sm="3">비밀번호 확인 {`*`}</Form.Label>
+                <Col sm="9">
                   <Form.Control name="password_check" type="password" id="password_check" value={passwordCheck} onChange={handlePasswordCheck}/>
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className='mb-3 pt-5'>
-                <Form.Label column sm="2">우편번호</Form.Label>
+                <Form.Label column sm="3">우편번호 {`*`}</Form.Label>
                 <Col sm="4">
                   <Form.Control name="zipNo" id="zipNo" value={zipNo} onChange={handleZipNo} readOnly/>
                 </Col>
-                <Col sm="6">
+                <Col sm="5">
                   <Button variant='primary' onClick={findZipNo}>우편번호 찾기</Button>
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className='mb-3'>
-                <Form.Label column sm="2">기본주소</Form.Label>
-                <Col sm="10">
+                <Form.Label column sm="3">기본주소 {`*`}</Form.Label>
+                <Col sm="9">
                   <Form.Control name="addr" id="addr" value={addr} onChange={handleAddr} readOnly/>
                 </Col>
               </Form.Group>
-              <Form.Group as={Row} className='mb-3'>
-                <Form.Label column sm="2">상세주소</Form.Label>
-                <Col sm="10">
-                  <Form.Control name="addrDetail" id="addrDetail" value={addrDetail} onChange={handleAddrDetail}/>
-                </Col>
-              </Form.Group>
               <Form.Group as={Row} className='mb-3 mt-2'>
-                <Form.Label column sm="2">생년월일</Form.Label>
-                <Col sm="10">
+                <Form.Label column sm="3" >생년월일</Form.Label>
+                <Col sm="9">
                   <ReactDatePicker
-                    dateFormat={'yyyy.MM.dd'}/>
-                  <Form.Control name="birth" id="birth" value={birth} onChange={handleBirth}/>
+                    dateFormat={'yyyy.MM.dd'} 
+                    selected={birth} 
+                    onChange={handleBirth} 
+                    className="form-control"
+                    maxDate={addDays(new Date(), 0)}/>
+                  <Form.Control type='hidden' name="birth" id="birth" value={formattedBirth} readOnly/>
                 </Col>
               </Form.Group>
+              <Form.Group as={Row} className='mb-3'>
+                <Form.Label column sm="3">성별</Form.Label>
+                <Col sm="4">
+                  <Row>
+                    <Col>
+                      <Form.Check type={"radio"} name="gender" value="male" label={"남자"}/>
+                    </Col>
+                    <Col>
+                      <Form.Check type={"radio"} name="gender" value="female" label={"여자"}/>
+                    </Col>
+                  </Row>
+                </Col>
+              </Form.Group>
+              <Form.Group as={Row} className='mb-3'>
+                <Form.Label column sm="3">결혼 여부</Form.Label> 
+                <Col sm="6">
+                  <Row>
+                    <Col>
+                      <Form.Check type='radio' value="married" name="married" label="기혼"/>
+                    </Col>
+                    <Col>
+                      <Form.Check type="radio" value="unmarried" name="married" label="미혼"/>
+                    </Col>
+                    <Col>
+                      <Form.Check type="radio" value="divorce" name="married" label="이혼/사별"/>
+                      {/* divorce = 이혼 */}
+                    </Col>
+                  </Row>
+                </Col>               
+              </Form.Group>
+              <Form.Group as={Row} className='mb-5'>
+                <Form.Label column sm="3">직업</Form.Label>
+                <Col sm="3">
+                  <Form.Select aria-label="직업" value={occupation} onChange={handleOccupation}>
+                    <option value="전문직">전문직</option>
+                    <option value="경영직">경영직</option>
+                    <option value="사무직">사무직</option>
+                    <option value="서비스/영업/판매직">서비스/영업/판매직</option>
+                    <option value="생산/기술직/노무직">생산/기술직/노무직</option>
+                    <option value="교사/학원강사">교사/학원강사</option>
+                    <option value="공무원(공기업 포함)">공무원(공기업 포함)</option>
+                    <option value="학생">학생</option>
+                    <option value="전업주부">전업주부</option>
+                    <option value="농/임/어업">임</option>
+                    <option value="자영업">자영업</option>
+                    <option value="자유직/프리랜서">자유직/프리랜서</option>
+                    <option value="무직">무직</option>
+                    <option value="기타">기타</option>
+                  </Form.Select>
+                </Col>
+              </Form.Group>
+              <Row className='pt-5 justify-content-md-center'>
+                <Col sm="4">
+                  <Button type="submit" variant='primary' size="lg">회원가입하기</Button>
+                </Col>
+              </Row>
             </Form>
           </Col>
         </Row>

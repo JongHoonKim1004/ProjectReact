@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Accordion, Button, Col, Container, Form, Row } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register_terms = () => {
+  const navigation = useNavigate();
+
   const [check1, setCheck1] = useState(false);
   const [check2, setCheck2] = useState(false);
   const [check3, setCheck3] = useState(false);
@@ -38,6 +40,8 @@ const Register_terms = () => {
     if(!check1 || !check2){
       e.preventDefault();
       alert("필수 동의항목에 동의해주세요.");
+    } else {
+      navigation('/register_forms', {replace: true});
     }
   }
   return (
@@ -342,7 +346,7 @@ const Register_terms = () => {
             <Row className="justify-content-md-center">
               <Col md="2">
                 <Link to="/register_forms" onClick={handleClick}>
-                  <img alt="" src="img/register_terms/nextStepBt_180x45.gif"></img>
+                  <img alt="다음 단계로" src="img/register_terms/nextStepBt_180x45.gif"></img>
                 </Link>
               </Col>
 
