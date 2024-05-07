@@ -1,6 +1,9 @@
 import React from "react";
-import { Container, Dropdown, Nav, NavDropdown, Navbar, Row } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
+import AdminNavbar from "./AdminNavbar";
+import Dashboard from "./adminComponent/Dashboard";
+import AdminSidebar from "./adminComponent/AdminSidebar";
+import { Col, Row } from "react-bootstrap";
 
 const AdminMain = () => {
   // navigation
@@ -8,33 +11,17 @@ const AdminMain = () => {
 
   return (
     <div>
-      {/** 사이드 바 */}
+      <AdminNavbar/>
       <Row>
-        <Navbar sticky="top" bg="dark" data-bs-theme="dark">
-          <Container style={{ marginLeft: "50px", marginRight: "0" }}>
-            <Navbar.Brand>
-              <img alt="" src="img/header/logo.png" />
-            </Navbar.Brand>
-            <Nav className="me-auto">
-              <Nav.Link href="#home">대시보드</Nav.Link>
-              <Nav.Link disabled>|</Nav.Link>
-              <Nav.Link href="#features">이용자 관리</Nav.Link>
-              <Nav.Link disabled>|</Nav.Link>
-              <Nav.Link href="#pricing">사업자 관리</Nav.Link>
-              <Nav.Link disabled>|</Nav.Link>
-              <Nav.Link href="">설문조사 관리</Nav.Link>
-              <Nav.Link disabled>|</Nav.Link>
-              <Nav.Link href="">1:1 문의 관리</Nav.Link>
-              <Nav.Link disabled>|</Nav.Link>
-              <Nav.Link href="">공지사항 관리</Nav.Link>
-              <Nav.Link disabled>|</Nav.Link>
-              <Nav.Link href="">자주묻는 질문 관리</Nav.Link>
-              <Nav.Link disabled>|</Nav.Link>
-              <Nav.Link href="">관리자 설정</Nav.Link>
-            </Nav>
-            
-          </Container>
-        </Navbar>
+        <Col md="2">
+          <AdminSidebar/>
+        </Col>
+        <Col md="10">
+          <Routes>
+            <Route path="/" element={<Dashboard/>}/>
+
+          </Routes>
+        </Col>
       </Row>
     </div>
   );

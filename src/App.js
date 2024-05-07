@@ -55,7 +55,7 @@ function App() {
 
 
           {/** 관리자 페이지 전체 */}
-          <Route path="/adminMain" element={<AdminMain/>}/>
+          <Route path="/adminMain/*" element={<AdminMain/>}/>
         </Routes>
       </div>
     
