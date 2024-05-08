@@ -1,24 +1,64 @@
 import React from "react";
-import { Link, Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 import Dashboard from "./adminComponent/Dashboard";
 import AdminSidebar from "./adminComponent/AdminSidebar";
 import { Col, Row } from "react-bootstrap";
+import AdminSurveyList from "./adminComponent/AdminSurveyList";
+import AdminSurveyRead from "./adminComponent/AdminSurveyRead";
+import AdminUsersList from "./adminComponent/AdminUsersList";
+import AdminUsersRead from "./adminComponent/AdminUsersRead";
+import AdminAdminList from "./adminComponent/AdminAdminList";
+import AdminAdminRead from "./adminComponent/AdminAdminRead";
+import AdminAdminCreate from "./adminComponent/AdminAdminCreate";
+import AdminMemberList from "./adminComponent/AdminMemberList";
+import AdminMemberRead from "./adminComponent/AdminMemberRead";
+import AdminMemberCreate from "./adminComponent/AdminMemberCreate";
+import AdminNoticeList from "./adminComponent/AdminNoticeList";
+import AdminNotiveRead from "./adminComponent/AdminNotiveRead";
+import AdminNoticeCreate from "./adminComponent/AdminNoticeCreate";
 
 const AdminMain = () => {
   // navigation
   const navigation = useNavigate();
 
   return (
-    <div>
+    <div >
       <AdminNavbar/>
-      <Row>
-        <Col md="2">
+      <Row style={{minHeight: "946px"}}>
+        <Col className="px-0" md="2" style={{backgroundColor: "RGB(235, 235, 235)"}}>
           <AdminSidebar/>
         </Col>
-        <Col md="10">
+        <Col className="px-0" md="10" style={{ backgroundColor: "RGB(235, 235, 235)" }}>
           <Routes>
             <Route path="/" element={<Dashboard/>}/>
+            
+            {/** 설문조사 관리 탭 */}
+            <Route path="/survey/list" element={<AdminSurveyList/>}/>
+            <Route path="/survey/read" element={<AdminSurveyRead/>}/>
+
+            {/** 1:1 문의 관리 탭 */}
+
+            {/** 이용자 관리 탭 */}
+            <Route path="/users/list" element={<AdminUsersList/>}/>
+            <Route path="/users/read/:usersId" element={<AdminUsersRead/>}/>
+
+            {/** 관리자 설정 탭 */}
+            <Route path="/admin/list" element={<AdminAdminList/>}/>
+            <Route path="/admin/read/:adminId" element={<AdminAdminRead/>}/>
+            <Route path="/admin/create" element={<AdminAdminCreate/>}/>
+
+            {/** 사업자 관리 탭 */}
+            <Route path="/member/list" element={<AdminMemberList/>}/>
+            <Route path="/member/read/:memberId" element={<AdminMemberRead/>}/>
+            <Route path="/member/create" element={<AdminMemberCreate/>}/>
+
+            {/** 공지사항 관리 탭 */}
+            <Route path="/notice/list" element={<AdminNoticeList/>}/>
+            <Route path="/notice/read" element={<AdminNotiveRead/>}/>
+            <Route path="/notice/create" element={<AdminNoticeCreate/>}/>
+            {/** 자주묻는 질문 관리 탭 */}
+
 
           </Routes>
         </Col>

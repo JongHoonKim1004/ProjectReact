@@ -78,7 +78,7 @@ const Register_forms = () => {
 
   // 아이디 중복확인
   const idCheck = (e) => {
-    setUsername(e.target.value);
+    
     if(username !== ""){
       window.open(`./idCheck?username=${username}`, "_blank", "width=700, height=500, left=100, top=100")
     } else {

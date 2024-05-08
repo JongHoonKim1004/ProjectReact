@@ -21,7 +21,7 @@ import Register_result from './Component/Register_result';
 import UsernameCheck from './Component/UsernameCheck';
 import Post from './Component/daum/Post';
 import AdminMain from './Component/admin/AdminMain';
-
+import './font-awesome-4.7.0/css/font-awesome.css';
 
 
 function App() {
@@ -55,7 +55,7 @@ function App() {
 
 
           {/** 관리자 페이지 전체 */}
-          <Route path="/adminMain/*" element={<AdminMain/>}/>
+          <Route path="/admin/*" element={<AdminMain/>}/>
         </Routes>
       </div>
     

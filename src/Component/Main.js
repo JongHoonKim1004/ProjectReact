@@ -211,8 +211,11 @@ const Main = () => {
         <Row>
           <Col>
             <Row>
-              <Col style={{display: "flex", alignItems: "center"}}>
-                <img alt="" src="img/main/mPhoneInfo_tx.gif"></img>
+              <Col>
+                <Row>
+                  <Link to="/admin">관리자 페이지</Link>
+                </Row>
+                <Row></Row>
               </Col>
               <Col>
                 <img alt="" src="img/main/mSaving_bg.gif"/>
@@ -222,13 +225,16 @@ const Main = () => {
               </Col>
             </Row>
             <Row  className="mb-2 mt-2">
-              <Col sm="4" style={{display: "flex", justifyContent: "center"}}>
+              <Col style={{display: "flex", alignItems: "center"}}>
+                <img alt="" src="img/main/mPhoneInfo_tx.gif"></img>
+              </Col>
+              <Col sm="3" style={{display: "flex", justifyContent: "center"}}>
                 <img alt="" src="img/main/mFaqImg.gif"/>
               </Col>
-              <Col sm="4" style={{display: "flex", justifyContent: "center"}}>
+              <Col sm="3" style={{display: "flex", justifyContent: "center"}}>
                 <img alt="" src="img/main/mQnaImg.gif"/>
               </Col>
-              <Col sm="4" style={{display: "flex", justifyContent: "center"}}>
+              <Col sm="3" style={{display: "flex", justifyContent: "center"}}>
                 <img alt="" src="img/main/mAppDownImg.gif"/>
               </Col>
             </Row>
