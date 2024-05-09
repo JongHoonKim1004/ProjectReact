@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 import Dashboard from "./adminComponent/Dashboard";
 import AdminSidebar from "./adminComponent/AdminSidebar";
@@ -17,10 +17,11 @@ import AdminMemberCreate from "./adminComponent/AdminMemberCreate";
 import AdminNoticeList from "./adminComponent/AdminNoticeList";
 import AdminNotiveRead from "./adminComponent/AdminNotiveRead";
 import AdminNoticeCreate from "./adminComponent/AdminNoticeCreate";
+import AdminFaqList from "./adminComponent/AdminFaqList";
+import AdminFaqRead from "./adminComponent/AdminFaqRead";
+import AdminFaqCreate from "./adminComponent/AdminFaqCreate";
 
 const AdminMain = () => {
-  // navigation
-  const navigation = useNavigate();
 
   return (
     <div >
@@ -55,11 +56,12 @@ const AdminMain = () => {
 
             {/** 공지사항 관리 탭 */}
             <Route path="/notice/list" element={<AdminNoticeList/>}/>
-            <Route path="/notice/read" element={<AdminNotiveRead/>}/>
+            <Route path="/notice/read/:id" element={<AdminNotiveRead/>}/>
             <Route path="/notice/create" element={<AdminNoticeCreate/>}/>
             {/** 자주묻는 질문 관리 탭 */}
-
-
+            <Route path="/faq/list" element={<AdminFaqList/>}/>
+            <Route path="/faq/read/:faqId" element={<AdminFaqRead/>}/>
+            <Route path="/faq/create" element={<AdminFaqCreate/>}/>
           </Routes>
         </Col>
       </Row>

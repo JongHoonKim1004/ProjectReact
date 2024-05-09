@@ -26,8 +26,8 @@ const AdminSidebar = () => {
             <MenuItem component={<Link to={'/admin/notice/create'}/>}>새 공지사항 작성</MenuItem>
           </SubMenu>
           <SubMenu label="자주묻는 질문 관리">
-            <MenuItem>자주묻는 질문 목록</MenuItem>
-            <MenuItem>새로운 질문 작성</MenuItem>
+            <MenuItem component={<Link to={'/admin/faq/list'}/>}>자주묻는 질문 목록</MenuItem>
+            <MenuItem component={<Link to={'/admin/faq/create'}/>}>새로운 질문 작성</MenuItem>
           </SubMenu>
         </Menu>
       </Sidebar>

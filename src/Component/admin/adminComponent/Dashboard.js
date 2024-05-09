@@ -1,10 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Card, Col, Row, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
+  // 회원 목록, 설문조사 목록 state
+  const [usersList, setUsersList] = useState([]);
+  const [surveyList, setSurveyList] = useState([]);
+
+  // 화면 호출시 바로 시행
   useEffect(() => {
+    // 화면 제일 위로
     window.scroll(0,0);
+
+
   },[]);
   return (
     <main className="p-5">
