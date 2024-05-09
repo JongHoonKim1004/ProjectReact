@@ -3,6 +3,7 @@ import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import 'react-datepicker/dist/react-datepicker.css';
 import ReactDatePicker from 'react-datepicker';
 import { addDays } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 
 const Register_forms = () => {
   // 유저 정보 상태 설정
@@ -15,7 +16,24 @@ const Register_forms = () => {
   const [addr, setAddr] = useState();
   const [birth, setBirth] = useState(new Date());
   const [occupation, setOccupation] = useState();
+  const [phone, setPhone] = useState();
+  const [addrDetail, setAddrDetail] = useState();
+  const [gender, setGender] = useState();
+  const [married, setMarried] = useState();
 
+  const handleMarried = (e) => {
+    setMarried(e.target.value);
+    console.log(e.target.value);
+  }
+  const handleGender = (e) => {
+    setGender(e.target.value);
+  }
+  const handleAddrDetail = (e) => {
+    setAddrDetail(e.target.value);
+  }
+  const handlePhone = (e) => {
+    setPhone(e.target.value);
+  }
   const handleUsername = (e) => {
     setUsername(e.target.value);
   }
@@ -41,6 +59,7 @@ const Register_forms = () => {
   }
   const handleOccupation = (e) => {
     setOccupation(e.target.value);
+    console.log(occupation);
   }
 
   // 새로 연 창에서 데이터 받을 수 있도록 설정
@@ -94,6 +113,50 @@ const Register_forms = () => {
     
   }
 
+  // navigate
+  const navigate = useNavigate();
+
+  // onSubmit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    let user = {
+      name: username,
+      nickname: name,
+      password: password,
+      phone: phone,
+      zipNo: zipNo,
+      addr: addr,
+      addrDetail: addrDetail,
+      birth: birth || null,
+      gender: gender || null,
+      occupation: occupation || null,
+      married
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/users/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user)
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const text = await response.text();
+      console.log(text);
+      alert("등록이 정상적으로 되었습니다.");
+      navigate('/');
+    } catch (error) {
+      console.error('Error:', error);
+      alert("회원등록 중 오류가 발생했습니다: " + error.message);
+    }
+  }
+
   return (
     <div>
       <Container style={{ backgroundColor: "RGB(240, 240, 240)" }}>
@@ -114,7 +177,7 @@ const Register_forms = () => {
         </Row>
         <Row className="justify-content-md-center mt-4">
           <Col md="8">
-            <Form>
+            <Form onSubmit={handleSubmit}>
               <Form.Group className='mb-3'>
                 아래의 정보를 정확하게 입력해주세요.
               </Form.Group>
@@ -151,6 +214,12 @@ const Register_forms = () => {
                   <Form.Control name="password_check" type="password" id="password_check" value={passwordCheck} onChange={handlePasswordCheck}/>
                 </Col>
               </Form.Group>
+              <Form.Group as={Row} className='mb-3'>
+                <Form.Label column sm="3">연락처 {`*`}</Form.Label>
+                <Col sm="9">
+                  <Form.Control name="phone" id="phone" value={phone} onChange={handlePhone}/>
+                </Col>
+              </Form.Group>
               <Form.Group as={Row} className='mb-3 pt-5'>
                 <Form.Label column sm="3">우편번호 {`*`}</Form.Label>
                 <Col sm="4">
@@ -164,6 +233,12 @@ const Register_forms = () => {
                 <Form.Label column sm="3">기본주소 {`*`}</Form.Label>
                 <Col sm="9">
                   <Form.Control name="addr" id="addr" value={addr} onChange={handleAddr} readOnly/>
+                </Col>
+              </Form.Group>
+              <Form.Group as={Row} className='mb-3'>
+                <Form.Label column sm="3">상세주소 {`*`}</Form.Label>
+                <Col sm="9">
+                  <Form.Control name="addrDetail" id="addrDetail" value={addrDetail} onChange={handleAddrDetail}/>
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className='mb-3 mt-2'>
@@ -183,10 +258,10 @@ const Register_forms = () => {
                 <Col sm="4">
                   <Row>
                     <Col>
-                      <Form.Check type={"radio"} name="gender" value="male" label={"남자"}/>
+                      <Form.Check type={"radio"} name="gender" value="male" label={"남자"} checked={gender === 'male'} onChange={handleGender}/>
                     </Col>
                     <Col>
-                      <Form.Check type={"radio"} name="gender" value="female" label={"여자"}/>
+                      <Form.Check type={"radio"} name="gender" value="female" label={"여자"} checked={gender === 'female'} onChange={handleGender}/>
                     </Col>
                   </Row>
                 </Col>
@@ -196,13 +271,13 @@ const Register_forms = () => {
                 <Col sm="6">
                   <Row>
                     <Col>
-                      <Form.Check type='radio' value="married" name="married" label="기혼"/>
+                      <Form.Check type='radio' value="married" name="married" label="기혼" checked={married === 'married'} onChange={handleMarried}/>
                     </Col>
                     <Col>
-                      <Form.Check type="radio" value="unmarried" name="married" label="미혼"/>
+                      <Form.Check type="radio" value="unmarried" name="married" label="미혼" checked={married === 'unmarried'} onChange={handleMarried}/>
                     </Col>
                     <Col>
-                      <Form.Check type="radio" value="divorce" name="married" label="이혼/사별"/>
+                      <Form.Check type="radio" value="divorce" name="married" label="이혼/사별" checked={married === 'divorce'} onChange={handleMarried}/>
                       {/* divorce = 이혼 */}
                     </Col>
                   </Row>
@@ -212,6 +287,7 @@ const Register_forms = () => {
                 <Form.Label column sm="3">직업</Form.Label>
                 <Col sm="3">
                   <Form.Select aria-label="직업" value={occupation} onChange={handleOccupation}>
+                    <option>선택</option>
                     <option value="전문직">전문직</option>
                     <option value="경영직">경영직</option>
                     <option value="사무직">사무직</option>

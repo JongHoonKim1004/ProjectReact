@@ -5,7 +5,8 @@
   ],
   "rules": {
     "no-undef": "off",            // 정의되지 않은 변수 사용 허용
-    "no-restricted-globals": "off" // 제한된 전역 변수 사용 허용
+    "no-restricted-globals": "off", // 제한된 전역 변수 사용 허용
+    "no-unused-vars": "warn"
   },
   "overrides": [
     {
@@ -13,7 +14,8 @@
       "rules": {
         "no-undef": "off",
         "no-restricted-globals": "off",
-        "no-unused-expressions": "off"
+        "no-unused-expressions": "off",
+        "no-unused-vars": "warn"
       }
     }
   ]

@@ -20,9 +20,9 @@ const Header = () => {
                 flexDirection: "row-reverse",
                 fontSize: "12px"
               }}>
-                <Link style={{textDecoration: "none", color: "black", color: "#999"}} to="/register_terms">로그아웃</Link>
+                <Link style={{textDecoration: "none", color: "#999"}} to="/register_terms">로그아웃</Link>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                <Link style={{textDecoration: "none", color: "black", color: "#999"}} to="/login">로그인</Link>
+                <Link style={{textDecoration: "none", color: "#999"}} to="/login">로그인</Link>
               </Col>
             </Row>
             <Row>
