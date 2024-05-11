@@ -1,14 +1,28 @@
-import React from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import React, { useState } from "react";
+import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 const MemberPointCharge = () => {
   // useNavigate 설정
   const navigate = useNavigate();
 
+  // 결제 금액 설정
+  const [price, setPrice] = useState(0);
+
+  // 총 금액 설정
+  const [total, setTotal] = useState(0);
+
+  // 결제금액 변경시 총 포인트도 변경되도록
+  const handlePrice = (e) => {
+    let newPrice = parseInt(e.target.value) || 0;
+    setPrice(newPrice);
+
+    let totalPoint = newPrice + 10000;
+    setTotal(totalPoint);
+  }
+  
   // 결제 모듈 호출
   function onClickPayment() {
-
     /* 1. 가맹점 식별하기 */
     const { IMP } = window;
     IMP.init('imp77306658');
@@ -18,7 +32,7 @@ const MemberPointCharge = () => {
       pg: 'nice',                           // PG사
       pay_method: 'card',                           // 결제수단
       merchant_uid: `mid_${new Date().getTime()}`,   // 주문번호
-      amount: 1000,                                 // 결제금액
+      amount: price,                                 // 결제금액
       name: '포인트 충전',                  // 주문명
       buyer_name: '홍길동',                           // 구매자 이름
       buyer_tel: '01012341234',                     // 구매자 전화번호
@@ -70,16 +84,31 @@ const MemberPointCharge = () => {
               <Form.Group as={Row} className="mb-3 pt-3">
                 <Form.Label column sm="3">현재 포인트 잔액</Form.Label>
                 <Col sm="9">
-                  <Form.Control plaintext readOnly value={"10000"} style={{textAlign: "right"}}/>
+                  <InputGroup>
+                    <Form.Control type="number" readOnly value={"10000"} style={{textAlign: "right"}}/>
+                    <InputGroup.Text>포인트</InputGroup.Text>
+                  </InputGroup>
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className="mb-3">
                 <Form.Label column sm="3">충전할 포인트</Form.Label>
                 <Col sm="9">
-                  <Form.Control style={{textAlign: "right"}}/>
+                  <InputGroup>
+                    <Form.Control style={{textAlign: "right"}} type="number" step={1000} defaultValue={0} value={price} onChange={handlePrice}/>
+                    <InputGroup.Text>포인트</InputGroup.Text>
+                  </InputGroup>
                 </Col>
               </Form.Group>
-              <Form.Group as={Row} className="mb-3">
+              <Form.Group as={Row} className="mb-3 pt-3">
+                <Form.Label column sm="3">결제시 총 포인트</Form.Label>
+                <Col sm="9">
+                  <InputGroup>
+                    <Form.Control type="number" readOnly style={{textAlign: "right"}} value={total} />
+                    <InputGroup.Text>포인트</InputGroup.Text>
+                  </InputGroup>
+                </Col>
+              </Form.Group>
+              <Form.Group as={Row} className="mb-3 pt-5">
                 <Col sm="10"></Col>
                 <Col ms="2">
                   <Button variant="primary" type="button" onClick={onClickPayment}>충전하기</Button>
