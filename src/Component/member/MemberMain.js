@@ -6,6 +6,10 @@ import { Route, Routes } from "react-router-dom";
 import Dahboard from "./Component/Dahboard";
 import MemberInfoModify from "./Component/MemberInfoModify";
 import MemberPointLog from "./Component/MemberPointLog";
+import MemberSurveyList from "./Component/MemberSurveyList";
+import MemberSurveyRead from "./Component/MemberSurveyRead";
+import MemberSurveyParicipate from "./Component/MemberSurveyParicipate";
+import MemberPointCharge from "./Component/MemberPointCharge";
 
 const MemberMain = () => {
   return (
@@ -31,8 +35,14 @@ const MemberMain = () => {
             {/** 사업자 정보 변경 페이지 */}
             <Route path="/infoModify" element={<MemberInfoModify/>}/>
 
+            {/** 사업자 설문조사 관련 페이지 */}
+            <Route path="/survey/list" element={<MemberSurveyList/>}/>
+            <Route path="/survey/read" element={<MemberSurveyRead/>}/>
+            <Route path="/survey/participate" element={<MemberSurveyParicipate/>}/>
+
             {/** 사업자 포인트 이력 페이지 */}
             <Route path="/point/log" element={<MemberPointLog/>}/>
+            <Route path="/point/charge" element={<MemberPointCharge/>}/>
           </Routes>
         </Col>
       </Row>
