@@ -22,6 +22,7 @@ import UsernameCheck from './Component/UsernameCheck';
 import Post from './Component/daum/Post';
 import AdminMain from './Component/admin/AdminMain';
 import './font-awesome-4.7.0/css/font-awesome.css';
+import MemberMain from './Component/member/MemberMain';
 
 
 function App() {
@@ -56,6 +57,9 @@ function App() {
 
           {/** 관리자 페이지 전체 */}
           <Route path="/admin/*" element={<AdminMain/>}/>
+
+          {/** 사업자 페이지 전체 */}
+          <Route path="/member/*" element={<MemberMain/>}/>
         </Routes>
       </div>
     

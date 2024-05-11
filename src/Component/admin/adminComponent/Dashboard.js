@@ -27,7 +27,7 @@ const Dashboard = () => {
                 <Col>
                   <i className="fa fa-users fa-5x"></i>
                 </Col>
-                <Col className="px-5">
+                <Col>
                   <Row>
                     <h3 style={{ textAlign: "right" }}>유저 수</h3>
                   </Row>
@@ -48,9 +48,9 @@ const Dashboard = () => {
                 <Col>
                   <i className="fa fa-users fa-5x"></i>
                 </Col>
-                <Col className="px-5">
+                <Col>
                   <Row>
-                    <h3 style={{ textAlign: "right" }}>유저 수</h3>
+                    <h3 style={{ textAlign: "right" }}>설문 수</h3>
                   </Row>
                   <Row>
                     <span className="usersNum" style={{ textAlign: "right" }}>
@@ -69,9 +69,9 @@ const Dashboard = () => {
                 <Col>
                   <i className="fa fa-users fa-5x"></i>
                 </Col>
-                <Col className="px-5">
+                <Col>
                   <Row>
-                    <h3 style={{ textAlign: "right" }}>유저 수</h3>
+                    <h3 style={{ textAlign: "right" }}>문의 수</h3>
                   </Row>
                   <Row>
                     <span className="usersNum" style={{ textAlign: "right" }}>
@@ -90,9 +90,9 @@ const Dashboard = () => {
                 <Col>
                   <i className="fa fa-users fa-5x"></i>
                 </Col>
-                <Col className="px-5">
+                <Col>
                   <Row>
-                    <h3 style={{ textAlign: "right" }}>유저 수</h3>
+                    <h5 style={{ textAlign: "right" }}>총 조사인원 수</h5>
                   </Row>
                   <Row>
                     <span className="usersNum" style={{ textAlign: "right" }}>

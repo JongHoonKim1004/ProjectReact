@@ -212,10 +212,12 @@ const Main = () => {
           <Col>
             <Row>
               <Col>
-                <Row>
+                <Row className="mb-3">
                   <Link to="/admin">관리자 페이지</Link>
                 </Row>
-                <Row></Row>
+                <Row>
+                  <Link to="/member">사업자 페이지</Link>
+                </Row>
               </Col>
               <Col>
                 <img alt="" src="img/main/mSaving_bg.gif"/>
