@@ -14,6 +14,11 @@ const MemberPointCharge = () => {
 
   // 결제금액 변경시 총 포인트도 변경되도록
   const handlePrice = (e) => {
+    if(parseInt(e.target.value) < 0){
+      alert("더 이상 낮출 수 없습니다.");
+      return false;
+    }
+
     let newPrice = parseInt(e.target.value) || 0;
     setPrice(newPrice);
 

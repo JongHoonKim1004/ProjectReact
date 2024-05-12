@@ -73,7 +73,7 @@ const AdminMemberCreate = () => {
       console.log(data);
     }
   
-    // 생일 input 변경
+    // 설립일 input 변경
     const formatDate = (date) => {
       const d = new Date(date);
       let month = '' + (d.getMonth() + 1),

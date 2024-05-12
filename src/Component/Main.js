@@ -211,7 +211,7 @@ const Main = () => {
         <Row>
           <Col>
             <Row>
-              <Col>
+              <Col md="4">
                 <Row className="mb-3">
                   <Link to="/admin">관리자 페이지</Link>
                 </Row>
@@ -219,25 +219,33 @@ const Main = () => {
                   <Link to="/member">사업자 페이지</Link>
                 </Row>
               </Col>
-              <Col>
-                <img alt="" src="img/main/mSaving_bg.gif"/>
-              </Col>
-              <Col>
-                <img alt="" src="img/main/mProtectionImg.gif"/>
+              <Col md="8">
+                <Row>
+                  <Col>
+                    <img alt="" src="img/main/mSaving_bg.gif" style={{width: "100%"}}/>
+                  </Col>
+                  <Col>
+                    <img alt="" src="img/main/mProtectionImg.gif" style={{width: "100%"}}/>
+                  </Col>
+                </Row>
               </Col>
             </Row>
             <Row  className="mb-2 mt-2">
-              <Col style={{display: "flex", alignItems: "center"}}>
-                <img alt="" src="img/main/mPhoneInfo_tx.gif"></img>
+              <Col md="4" style={{display: "flex", alignItems: "center"}}>
+                <img alt="" src="img/main/mPhoneInfo_tx.gif" style={{width: "100%"}}></img>
               </Col>
-              <Col sm="3" style={{display: "flex", justifyContent: "center"}}>
-                <img alt="" src="img/main/mFaqImg.gif"/>
-              </Col>
-              <Col sm="3" style={{display: "flex", justifyContent: "center"}}>
-                <img alt="" src="img/main/mQnaImg.gif"/>
-              </Col>
-              <Col sm="3" style={{display: "flex", justifyContent: "center"}}>
-                <img alt="" src="img/main/mAppDownImg.gif"/>
+              <Col md="8">
+                <Row>
+                  <Col sm="4">
+                    <img alt="" src="img/main/mFaqImg.gif" style={{width: "100%"}}/>
+                  </Col>
+                  <Col sm="4">
+                    <img alt="" src="img/main/mQnaImg.gif" style={{width: "100%"}}/>
+                  </Col>
+                  <Col sm="4" >
+                    <img alt="" src="img/main/mAppDownImg.gif" style={{width: "100%", paddingTop: "15px"}}/>
+                  </Col>
+                </Row>
               </Col>
             </Row>
           </Col>

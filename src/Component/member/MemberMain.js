@@ -10,6 +10,8 @@ import MemberSurveyList from "./Component/MemberSurveyList";
 import MemberSurveyRead from "./Component/MemberSurveyRead";
 import MemberSurveyParicipate from "./Component/MemberSurveyParicipate";
 import MemberPointCharge from "./Component/MemberPointCharge";
+import MemberSurveyTitle from "./Component/MemberSurveyTitle";
+import MemberSurveyQuestion from "./Component/MemberSurveyQuestion";
 
 const MemberMain = () => {
   return (
@@ -39,6 +41,8 @@ const MemberMain = () => {
             <Route path="/survey/list" element={<MemberSurveyList/>}/>
             <Route path="/survey/read" element={<MemberSurveyRead/>}/>
             <Route path="/survey/participate" element={<MemberSurveyParicipate/>}/>
+            <Route path="/survey/create" element={<MemberSurveyTitle/>}/>
+            <Route path="/survey/create/sno" element={<MemberSurveyQuestion/>}/>
 
             {/** 사업자 포인트 이력 페이지 */}
             <Route path="/point/log" element={<MemberPointLog/>}/>
