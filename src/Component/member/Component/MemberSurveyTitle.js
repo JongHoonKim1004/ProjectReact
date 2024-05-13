@@ -75,7 +75,7 @@ const MemberSurveyTitle = () => {
   }
 
   // submit
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // 미입력 확인
     if(name.trim() == "" ||
@@ -96,18 +96,40 @@ const MemberSurveyTitle = () => {
     var survey = {
       name: name,
       description: description,
-      surveyember: surveyMember,
+      memberId: surveyMember,
       point: point,
       pointAtLeast: pointAtLeast,
-      startDate: formattedStartDate,
-      endDate: formattedEndDate
+      startDate: startDate,
+      endDate: endDate
     }
     
-    console.log(survey);
+    
     // 서버에서 설문조사 메타데이터 처리
+    try {
+      const response = await fetch(`http://localhost:8080/survey/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(survey)
+      });
 
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        let sno = result.surveyId;
+        navigate(`/member/survey/create/sno/${sno}`);
+        return true;
+      } else {
+        console.error('Failed to save Survey:', response.statusText);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error saving Survey:', error);
+      return false;
+    }
     // 서버 처리 과정 넣으면 이 부분 콜백에 넣기
-    navigate("/member/survey/create/sno");
+    
   }
   return (
     <main className="p-5">
@@ -161,7 +183,7 @@ const MemberSurveyTitle = () => {
               <Form.Group as={Row} className='mb-3'>
                 <Form.Label column sm="3">사업자</Form.Label>
                 <Col sm="9">
-                  <Form.Control name="surveyMember" id="surveyMember" value={"surveyMember"} readOnly aria-describedby='memberHelp'/>
+                  <Form.Control name="surveyMember" id="surveyMember" value={surveyMember} onChange={(e) => setSurveyMember(e.target.value)} aria-describedby='memberHelp'/>
                   <Form.Text id="memberHelp">이 부분은 별도로 설정하지 않으셔도 됩니다</Form.Text>
                 </Col>
               </Form.Group>

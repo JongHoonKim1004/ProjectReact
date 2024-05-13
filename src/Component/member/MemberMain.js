@@ -39,10 +39,10 @@ const MemberMain = () => {
 
             {/** 사업자 설문조사 관련 페이지 */}
             <Route path="/survey/list" element={<MemberSurveyList/>}/>
-            <Route path="/survey/read" element={<MemberSurveyRead/>}/>
+            <Route path="/survey/read/:surveyId" element={<MemberSurveyRead/>}/>
             <Route path="/survey/participate" element={<MemberSurveyParicipate/>}/>
             <Route path="/survey/create" element={<MemberSurveyTitle/>}/>
-            <Route path="/survey/create/sno" element={<MemberSurveyQuestion/>}/>
+            <Route path="/survey/create/sno/:sno" element={<MemberSurveyQuestion/>}/>
 
             {/** 사업자 포인트 이력 페이지 */}
             <Route path="/point/log" element={<MemberPointLog/>}/>

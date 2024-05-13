@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Accordion, Button, Col, Form, InputGroup, Row } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const MemberSurveyQuestion = () => {
   // useNavigate
   const navigate = useNavigate();
+
+  // surveyId 설정
+  const {sno} = useParams();
 
   // state 설정
   const [questions, setQuestions] = useState([
@@ -13,7 +16,7 @@ const MemberSurveyQuestion = () => {
       question: {
         questionId: null,
         questionNumber: 1, // 질문 정렬을 위한 식별자
-        surveyId: "surveyId", // 설문조사 식별자
+        surveyId: sno, // 설문조사 식별자
         question: "", // 질문 내용
         questionType: "text", // 잘뮨 유형(input type에 기재될 내용)
         optionsType: "" // 입력에 도움이 될 정보
@@ -31,6 +34,9 @@ const MemberSurveyQuestion = () => {
       isTemporary: true, // 아직 서버로 보내지지 않았다면 true, 서버로 보내진 적이 있다면 false
     }
   ]);
+  
+  // 비정상 방법으로 페이지 이동 시
+
 
   // 질문 내용 변경시 함수
   const handelQuestionChange = (id, value) => {
@@ -111,7 +117,7 @@ const MemberSurveyQuestion = () => {
         const newOptionsNumber = q.options.length + 1;
         const newOption = {
           optionsId: null,
-          questionId: q.question.questionId,
+          questionId: q.question.questionId || null,
           optionsNumber: newOptionsNumber,
           options: "",
           terminate: false,
@@ -136,16 +142,90 @@ const MemberSurveyQuestion = () => {
   // 질문 저장 요청 함수
   const saveToServer = async (id) => {
     const questionData = questions.find(q => q.id === id);
-
-    if(questionData.isTemporary){
-      alert("아직 저장되지 않은 데이터 입니다");
-    } else {
-      alert("이미 저장된 데이터 입니다");
-    }
-
+    questionData.question.surveyId = sno;
     console.log(questionData);
-    return true;
-  }
+    if (questionData.isTemporary) {
+      try {
+        const response = await fetch(`http://localhost:8080/survey/question/create/${sno}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(questionData)
+        });
+  
+        if (response.ok) {
+          const result = await response.json();
+          console.log(result);
+          questionData.isSaved = true;
+          questionData.isTemporary = false;
+          questionData.question.questionId = result.question.questionId;
+          questionData.options.forEach((option, index) => {
+            option.questionId = result.question.questionId;
+            option.optionsId = result.options[index].optionsId;
+          })
+          console.log(questionData);
+          setQuestions(prevQuestions => prevQuestions.map(q => 
+            q.id === id ? { ...questionData} : q
+          ));
+          return true;
+        } else {
+          console.error('Failed to save question:', response.statusText);
+          return false;
+        }
+      } catch (error) {
+        console.error('Error saving question:', error);
+        return false;
+      }
+    } else {
+      try{
+      const questionId = questionData.question.questionId;
+      const response = await fetch(`http://localhost:8080/survey/question/update/question/${questionId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(questionData)
+        });
+  
+        if (response.ok) {
+          const result = await response.json();
+          console.log(result);
+          questionData.question.questionId = result.question.questionId;
+          questionData.options.forEach((option, index) => {
+            option.questionId = result.question.questionId;
+            option.optionsId = result.options[index].optionsId;
+          })
+
+          setQuestions(prevQuestions => prevQuestions.map(q => 
+            q.id === id ? { ...questionData} : q
+          ));
+          return true;
+        } else {
+          console.error('Failed to save question:', response.statusText);
+          return false;
+        }
+      } catch (error) {
+        console.error('Error saving question:', error);
+        return false;
+      }
+    }
+  };
+
+  // 다중 선택지(radio, checkbox) 의 조기종료 여부
+  const handleOptionsTerminate = useCallback((id, optionsNumber) => {
+    setQuestions(prevQuestions => prevQuestions.map(q => {
+      if (q.id === id) {
+        const updatedOptions = q.options.map(option =>
+          option.optionsNumber === optionsNumber
+            ? { ...option, terminate: !option.terminate }
+            : option
+        );
+        return { ...q, options: updatedOptions };
+      }
+      return q;
+    }));
+  }, []);
 
   // 질문 수정 버튼
   const handleModify = (id) => {
@@ -164,15 +244,25 @@ const MemberSurveyQuestion = () => {
     const questionData = questions.find(q => q.id === id);
     if(questionData.isTemporary){
       // 서버로 보내진 적 없는 질문은 의사 확인 후 바로 삭제
-      alert("아직 서버로 보내지지 않은 질문입니다");
       if(confirm("정말로 삭제하시겠습니까?")){
         setQuestions(prevQuestions => prevQuestions.filter(q => q.id !== id));
       }
     } else{
-      alert("이미 서버로 보내진 데이터입니다.");
-      alert("서버로 보내는 작업이 추가로 필요합니다");
+      // 서버에 저장된 질문은 서버에서 제거를 먼저 하고 삭제
       if(confirm("정말로 삭제하시겠습니까?")){
-        setQuestions(prevQuestions => prevQuestions.filter(q => q.id !== id));
+        fetch(`http://localhost:8080/survey/question/delete/question/${questionData.question.questionId}`,{
+          method: "post",
+          headers: {
+            "Content-Type" : "application/json"
+          },
+        }).then(response => {
+          return response.text();
+        }).then(result => {
+          console.log(result);
+          setQuestions(prevQuestions => prevQuestions.filter(q => q.id !== id));
+        })
+
+        
       }
     }
   }
@@ -189,6 +279,7 @@ const MemberSurveyQuestion = () => {
 
     if(!searchUnsaved){
       alert("모든 질문이 저장되어있습니다.");
+      navigate('/member/survey/list');
     }
   }
 
@@ -232,7 +323,7 @@ const MemberSurveyQuestion = () => {
                               <Col sm="10">
                                 <Form.Control
                                 name="question"
-                                placeholder='질문 내용을 잉력하세요'
+                                placeholder='질문 내용을 입력하세요'
                                 value={question.question.question}
                                 onChange={(e) => {handelQuestionChange(question.id, e.target.value)}}
                                 disabled={question.isSaved}
@@ -279,6 +370,8 @@ const MemberSurveyQuestion = () => {
                                   value={question.options.options}
                                   onChange={(e) => handleOptionsChange(question.id, question.options.optionsNumber, e.target.value)}
                                   disabled={question.isSaved}
+                                  readOnly
+                                  placeholder='주관식 입력은 아무것도 입력하지 않으셔도 됩니다'
                                 />
                               )}
                               {question.question.questionType === "number" &&(
@@ -287,42 +380,67 @@ const MemberSurveyQuestion = () => {
                                   value={question.options.options}
                                   onChange={(e) => handleOptionsChange(question.id, question.options.optionsNumber, e.target.value)}
                                   disabled={question.isSaved}
+                                  readOnly
+                                  placeholder='주관식 입력은 아무것도 입력하지 않으셔도 됩니다'
                                 />
                               )}
                               {question.question.questionType === "radio" && (
                                 <>
                                   {Array.isArray(question.options) && question.options.map((option, i) => (
-                                    <InputGroup key={i} className='mb-2'>
-                                      <InputGroup.Text id={"radio" + index + "-" + i}>{i + 1}</InputGroup.Text>
-                                      <Form.Control
-                                        type="text"
-                                        value={option.options}
-                                        onChange={(e) => handleOptionsChange(question.id, option.optionsNumber, e.target.value)}
-                                        disabled={question.isSaved}
-                                      />
-                                    </InputGroup>
+                                    <>
+                                      <InputGroup key={i} className='mb-2'>
+                                        <InputGroup.Text id={"radio" + index + "-" + i}>{i + 1}</InputGroup.Text>
+                                        <Form.Control
+                                          type="text"
+                                          value={option.options}
+                                          onChange={(e) => handleOptionsChange(question.id, option.optionsNumber, e.target.value)}
+                                          disabled={question.isSaved}
+                                        />
+                                        <InputGroup.Checkbox
+                                          name="terminate"
+                                          checked={option.terminate == true}
+                                          onChange={() => handleOptionsTerminate(question.id, option.optionsNumber)}
+                                        />
+                                      </InputGroup>
+                                      <Form.Text id={"radio" + i} >조기 종료할 질문은 오른쪽 체크박스를 체크해 주세요</Form.Text>
+                                    </>
                                   ))}
-                                  <Button variant='primary' onClick={() => addOptions(question.id)}>선택지 추가하기</Button>
+                                  <Row>
+                                    <Col><Button variant='primary' onClick={() => addOptions(question.id)} disabled={!question.isTemporary}>선택지 추가하기</Button></Col>
+                                  </Row>
                                 </>
                               )}
                               {question.question.questionType === "checkbox" && (
                                 <>
                                   {Array.isArray(question.options) && question.options.map((option, i) => (
-                                    <InputGroup key={i} className='mb-2'>
-                                      <InputGroup.Text id={"checkbox" + index + "-" + i}>{i + 1}</InputGroup.Text>
-                                      <Form.Control
-                                        type="text"
-                                        value={option.options}
-                                        onChange={(e) => handleOptionsChange(question.id, option.optionsNumber, e.target.value)}
-                                        disabled={question.isSaved}
-                                      />
-                                    </InputGroup>
+                                    <>
+                                      <InputGroup key={i} className='mb-2'>
+                                        <InputGroup.Text id={"checkbox" + index + "-" + i}>{i + 1}</InputGroup.Text>
+                                        <Form.Control
+                                          type="text"
+                                          value={option.options}
+                                          onChange={(e) => handleOptionsChange(question.id, option.optionsNumber, e.target.value)}
+                                          disabled={question.isSaved}
+                                        />
+                                        <InputGroup.Checkbox
+                                          name="terminate"
+                                          checked={option.terminate == true}
+                                          onChange={() => handleOptionsTerminate(question.id, option.optionsNumber)}
+                                        />
+                                      </InputGroup>
+                                      <Form.Text id={"checkbox" + i} >조기 종료할 질문은 오른쪽 체크박스를 체크해 주세요</Form.Text>
+                                    </>
                                   ))}
-                                  <Button variant='primary' onClick={() => addOptions(question.id)}>선택지 추가하기</Button>
+                                  <Row>
+                                    <Col>
+                                      <Button variant='primary' onClick={() => addOptions(question.id)} disabled={!question.isTemporary}>선택지 추가하기</Button>
+                                    </Col>
+                                  </Row>
                                 </>
                               )}
                               </Col>
                             </Form.Group>
+                            
                             <Form.Group as={Row} className='mb-5 pt-5 pt-5'>
                               <Col></Col>
                               <Col>

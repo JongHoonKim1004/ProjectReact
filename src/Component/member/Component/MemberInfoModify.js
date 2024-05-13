@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
@@ -19,6 +19,7 @@ const MemberInfoModify = () => {
   const [addrDetail, setAddrDetail] = useState("");
 
   // 본인 정보 호출 후 state 에 저장
+  
 
   // 제출 요청 처리
   const handleSubmit = (e) => {

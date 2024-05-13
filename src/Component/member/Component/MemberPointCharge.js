@@ -6,10 +6,9 @@ const MemberPointCharge = () => {
   // useNavigate 설정
   const navigate = useNavigate();
 
-  // 결제 금액 설정
+  // state 설정
+  const [member, setMember] = useState({});
   const [price, setPrice] = useState(0);
-
-  // 총 금액 설정
   const [total, setTotal] = useState(0);
 
   // 결제금액 변경시 총 포인트도 변경되도록
@@ -64,8 +63,17 @@ const MemberPointCharge = () => {
       alert('결제에 성공했습니다');
 
       // 서버로 사업자 포인트 충전 요청 보내기
-
-      navigate('/member/point/log');
+      fetch(`//localhost:8080/member/point/memberCharge/{memberId}/${point}`,{
+        method: "post",
+        headers: {
+          "Content-Type" : "application/json"
+        }
+      }).then(response => response.json())
+      .then(result => {
+        console.log(result);
+        alert("충전이 완료되었습니다.");
+        navigate('/member/point/log');
+      })
     } else {
       alert(`결제 실패: ${error_msg}`);
     }
