@@ -2,22 +2,32 @@ import { addDays } from "date-fns";
 import React, { useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import ReactDatePicker from "react-datepicker";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { setUser } from "../authSlice";
 
 const MyInfo = () => {
+  // useNavigate
+  const navigation = useNavigate();
+
+  // redux 설정
+  const dispatch = useDispatch();
+  const { user, token } = useSelector(state => state.auth);
+
+
   // 유저 정보 상태 설정
-  const [username, setUsername] = useState("");
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState(user.name || "");
+  const [name, setName] = useState(user.nickname || "");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
-  const [zipNo, setZipNo] = useState();
-  const [addr, setAddr] = useState();
-  const [birth, setBirth] = useState(new Date());
-  const [occupation, setOccupation] = useState();
-  const [phone, setPhone] = useState();
-  const [addrDetail, setAddrDetail] = useState();
-  const [gender, setGender] = useState();
-  const [married, setMarried] = useState();
+  const [zipNo, setZipNo] = useState(user.zipNo || "");
+  const [addr, setAddr] = useState(user.addr || "");
+  const [birth, setBirth] = useState(user.birth || new Date());
+  const [occupation, setOccupation] = useState(user.occupation || null);
+  const [phone, setPhone] = useState(user.phone || "");
+  const [addrDetail, setAddrDetail] = useState(user.addrDetail || "");
+  const [gender, setGender] = useState(user.gender || null);
+  const [married, setMarried] = useState(user.married || null);
 
   const handleMarried = (e) => {
     setMarried(e.target.value);
@@ -102,7 +112,17 @@ const MyInfo = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let user = {
+    // 입력 검증
+    if(username == null || name == null || password == null || passwordCheck == null || phone == null || zipNo == null || addr == null || addrDetail == null){
+      alert("입력되지 않은 부분이 있습니다.");
+      return false;
+    }
+    if(password != passwordCheck){
+      alert("비밀번호가 일치하지 않습니다.");
+      return false;
+    }
+
+    let users = {
       name: username,
       nickname: name,
       password: password,
@@ -117,12 +137,12 @@ const MyInfo = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/users/modify", {
+      const response = await fetch(`http://localhost:8080/users/update/${token.sub}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(user)
+        body: JSON.stringify(users)
       });
 
       if (!response.ok) {
@@ -132,6 +152,7 @@ const MyInfo = () => {
       const text = await response.text();
       console.log(text);
       alert("변경이 정상적으로 되었습니다.");
+      dispatch(setUser(users));
       navigate('/');
     } catch (error) {
       console.error('Error:', error);
@@ -158,22 +179,28 @@ const MyInfo = () => {
         </Row>
         <Row className="justify-content-md-center mt-4">
           <Col md="8">
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} className="bg-white px-5 pt-3 pb-3">
               
               <Form.Group className='mb-2 pb-3' style={{borderBottom: "1px solid #d8d8d8", textAlign: "right"}}>
                 * 표시는 필수 입력 사항입니다.
               </Form.Group>
               <Form.Group as={Row} className='mt-3 mb-3'>
+                <Form.Label column sm="3">회원번호</Form.Label>
+                <Col sm="9">
+                  <Form.Control type='text' name="usersId" id="usersId" readOnly plaintext value={token.sub} />
+                </Col>
+              </Form.Group>
+              <Form.Group as={Row} className='mt-3 mb-3'>
                 <Form.Label column sm="3">아이디 {`(`}이메일{`)`} {`*`}</Form.Label>
                 <Col sm="9">
-                  <Form.Control type='email' name="username" id="username" placeholder='example@example.com' value={username} onChange={handleUsername}/>
+                  <Form.Control type='email' name="username" id="username" placeholder='example@example.com' readOnly plaintext value={username}/>
                 </Col>
               </Form.Group>
               
               <Form.Group as={Row} className='mb-3 mt-1'>
                 <Form.Label column sm="3">이름 {`*`}</Form.Label>
                 <Col sm="9">
-                  <Form.Control name="name" id="name" value={name} onChange={handleName}/>
+                  <Form.Control name="name" id="name" readOnly plaintext value={name}/>
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className='mb-3'>
@@ -280,7 +307,7 @@ const MyInfo = () => {
                 </Col>
               </Form.Group>
               <Row className='pt-5 justify-content-md-center'>
-                <Col sm="4">
+                <Col sm="4" className="d-grid">
                   <Button type="submit" variant='primary' size="lg">정보 수정하기</Button>
                 </Col>
               </Row>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -10,9 +10,90 @@ import {
   Row,
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { clearToken, setLoginType, setToken, setUser, setUserPoint } from "../authSlice";
+import jwt_decode from 'jwt-decode';
+
 
 const Main = () => {
+  // usenavigate
   const navigation = useNavigate();
+
+  // redux 설정
+  const dispatch = useDispatch();
+  const {token, user, userPoint} = useSelector(state => state.auth);
+
+  // state
+  const [name, setName] = useState("");
+  const [password,setPassword] = useState("");
+
+  // login
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    
+
+    // 입력 검증
+    if(name == "" || password == ""){
+      alert("아이디와 비밀번호를 입력해주세요");
+      return false;
+    }
+    
+    try {
+      const response = await fetch(`http://localhost:8080/users/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name: name,
+          password: password
+        })
+      });
+
+      if (response.ok) {
+        // 로그인 처리 전 아이디 비밀번호 비우기
+        setName("");
+        setPassword("");
+
+        // 로그인 처리
+        const result = await response.json();
+        console.log(result);
+
+        // 사용자 정보 호출
+        const decoded = jwt_decode(result.token);
+        const userId = decoded.sub;
+        
+        const response2 = await fetch(`http://localhost:8080/users/read/${userId}`);
+        const data2 = await response2.json();
+        const response1 = await fetch(`http://localhost:8080/users/point/find/${userId}`);
+        const data1 = await response1.json();
+        dispatch(setUser(data2));
+        dispatch(setUserPoint(data1));
+
+        dispatch(setToken(result.token));
+        dispatch(setLoginType('normal'));
+
+        navigation('/', {replace: false});
+        return true;
+      } else {
+        console.error('Failed to save Survey:', response.statusText);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error saving Survey:', error);
+      return false;
+    }
+  }
+
+  // logout
+  const handleLogout = (e) => {
+    let checkLogout = confirm("정말로 로그아웃 하시겠습니까?");
+    if(checkLogout){
+      dispatch(clearToken());
+      navigation('/', {replace: false});
+    }
+  }
+
   return (
     <div>
       <Container>
@@ -53,7 +134,45 @@ const Main = () => {
             >
               <Card.Body>
                 <div style={{ width: "100%", height: "100%" }}>
-                  <Form>
+                  {token ? (
+                    <Row>
+                      <Col>
+                        <Row className="pt-3 pb-5">
+                          {user && (
+                            <Col>
+                              <h4>{user.nickname} 님, 환영합니다</h4>
+                            </Col>
+                          )}
+                        </Row>
+                        <Row className="pt-3 pb-5">
+                          <Col>
+                            <span>사용 가능한 포인트</span>
+                          </Col>
+                          {userPoint && (
+                            <Col>
+                              <span>{userPoint.pointBalance} 포인트</span>
+                            </Col>
+                          )}
+                        </Row>
+                        <Row className="pb-3">
+                          <Col className="d-grid">
+                            <Button 
+                              variant="success"
+                              onClick={() => navigation('/myInfo')}
+                            >회원정보 변경</Button>
+                            
+                          </Col>
+                          <Col className="d-grid">
+                            <Button 
+                              variant="danger"
+                              onClick={handleLogout}
+                            >로그아웃</Button>
+                          </Col>
+                        </Row>
+                      </Col>
+                    </Row>
+                  ) : (
+                    <Form onSubmit={handleLogin}>
                     <Row className="mb-2">
                       <Form.Group
                         as={Row}
@@ -68,6 +187,8 @@ const Main = () => {
                             name="name"
                             id="name"
                             placeholder="example@example.com"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                           />
                         </Col>
                       </Form.Group>
@@ -86,6 +207,8 @@ const Main = () => {
                             name="password"
                             id="password"
                             type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                           />
                         </Col>
                       </Form.Group>
@@ -100,6 +223,7 @@ const Main = () => {
                             width: "100%",
                             textAlign: "center",
                           }}
+                          
                         >
                           로그인
                         </Button>
@@ -160,6 +284,9 @@ const Main = () => {
                       </Col>
                     </Row>
                   </Form>
+                  )
+                }
+                  
                 </div>
               </Card.Body>
             </Card>

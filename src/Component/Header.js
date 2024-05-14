@@ -1,8 +1,21 @@
-import React from "react";
-import { Col, Container, Nav, NavDropdown, Navbar, Row } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Button, Col, Container, Nav, NavDropdown, Navbar, Row } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
 
+import { useDispatch, useSelector } from "react-redux";
+import { clearToken } from "../authSlice";
 const Header = () => {
+  const navigation = useNavigate();
+  const dispatch = useDispatch();
+  const {token, user, userPoint} = useSelector(state => state.auth);
+
+  const handleLogout = (e) => {
+    let checkLogout = confirm("정말로 로그아웃 하시겠습니까?");
+    if(checkLogout){
+      dispatch(clearToken());
+      navigation('/', {replace: false});
+    }
+  }
   return (
     <div className="mb-3 mt-1">
       <Container>
@@ -20,9 +33,19 @@ const Header = () => {
                 flexDirection: "row-reverse",
                 fontSize: "12px"
               }}>
-                <Link style={{textDecoration: "none", color: "#999"}} to="/register_terms">로그아웃</Link>
-                &nbsp;&nbsp;|&nbsp;&nbsp;
-                <Link style={{textDecoration: "none", color: "#999"}} to="/login">로그인</Link>
+                {token ? (
+                  <Button variant="link" style={{textDecoration: "none", color: "#999", height: "16px", fontSize: "12px"}} className="p-0" onClick={handleLogout}>로그아웃</Button>
+                ) : (
+                  <Link style={{textDecoration: "none", color: "#999"}} to="/login">로그인</Link>
+                )}
+                
+                {user ? (
+                  <div>
+                    
+                  <span style={{color: "#999"}}>{user.nickname} 님</span> 
+                  &nbsp;&nbsp;|&nbsp;&nbsp;
+                  </div>
+                ) : null}
               </Col>
             </Row>
             <Row className="pt-3 justify-content-end">

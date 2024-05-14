@@ -1,9 +1,80 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Container, Form, Row } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setLoginType, setToken, setUser, setUserPoint } from "../authSlice";
+import jwt_decode from 'jwt-decode';
 
 const Login = () => {
+  // usenavigate
   const navigation = useNavigate();
+
+  // redux 설정
+  const dispatch = useDispatch();
+  const {token, user, userPoint} = useSelector(state => state.auth);
+
+  // state
+  const [name, setName] = useState("");
+  const [password,setPassword] = useState("");
+
+  // login
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    
+
+    // 입력 검증
+    if(name == "" || password == ""){
+      alert("아이디와 비밀번호를 입력해주세요");
+      return false;
+    }
+    
+    try {
+      const response = await fetch(`http://localhost:8080/users/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name: name,
+          password: password
+        })
+      });
+
+      if (response.ok) {
+        // 로그인 처리 전 아이디 비밀번호 비우기
+        setName("");
+        setPassword("");
+
+        // 로그인 처리
+        const result = await response.json();
+        console.log(result);
+
+        // 사용자 정보 호출
+        const decoded = jwt_decode(result.token);
+        const userId = decoded.sub;
+        
+        const response2 = await fetch(`http://localhost:8080/users/read/${userId}`);
+        const data2 = await response2.json();
+        const response1 = await fetch(`http://localhost:8080/users/point/find/${userId}`);
+        const data1 = await response1.json();
+        dispatch(setUser(data2));
+        dispatch(setUserPoint(data1));
+
+        dispatch(setToken(result.token));
+        dispatch(setLoginType('normal'));
+
+        navigation('/', {replace: false});
+        return true;
+      } else {
+        console.error('Failed to save Survey:', response.statusText);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error saving Survey:', error);
+      return false;
+    }
+  }
+
   return (
     <div>
       <Container style={{ backgroundColor: "RGB(240, 240, 240)" }}>
@@ -27,13 +98,18 @@ const Login = () => {
             <Container style={{ backgroundColor: "white" }} className="p-5">
               <Row>
                 <Col>
-                  <Form>
+                  <Form onSubmit={handleLogin}>
                     <Form.Group as={Row} className="mb-3">
                       <Form.Label column sm="3">
                         아이디
                       </Form.Label>
                       <Col sm="9">
-                        <Form.Control name="username" id="username" />
+                        <Form.Control 
+                          name="username" 
+                          id="username"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                        />
                       </Col>
                     </Form.Group>
                     <Form.Group as={Row} className="mb-3">
@@ -45,6 +121,8 @@ const Login = () => {
                           type="password"
                           name="password"
                           id="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
                         />
                       </Col>
                     </Form.Group>
