@@ -1,5 +1,5 @@
-import React from "react";
-import { Route, Routes } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 import Dashboard from "./adminComponent/Dashboard";
 import AdminSidebar from "./adminComponent/AdminSidebar";
@@ -20,9 +20,30 @@ import AdminNoticeCreate from "./adminComponent/AdminNoticeCreate";
 import AdminFaqList from "./adminComponent/AdminFaqList";
 import AdminFaqRead from "./adminComponent/AdminFaqRead";
 import AdminFaqCreate from "./adminComponent/AdminFaqCreate";
+import AdminLogin from "./AdminLogin";
+import { useSelector } from "react-redux";
+import AdminVocList from "./adminComponent/AdminVocList";
 
 const AdminMain = () => {
+  // useNavigate
+  const navigation = useNavigate();
 
+  // redux 
+  const { admin, token  } = useSelector(state => state.auth);
+
+  useEffect(() => {
+    // 관리자 로그인 여부 확인
+    if(token == null){
+      navigation('/admin/login', {replace: false});
+    } else {
+      if(admin == null){
+        alert("잘못된 접근입니다");
+        navigation('/', {replace: false});
+      }
+    }
+  },[]);
+
+  
   return (
     <div >
       <AdminNavbar/>
@@ -34,11 +55,14 @@ const AdminMain = () => {
           <Routes>
             <Route path="/" element={<Dashboard/>}/>
             
+
             {/** 설문조사 관리 탭 */}
             <Route path="/survey/list" element={<AdminSurveyList/>}/>
             <Route path="/survey/read" element={<AdminSurveyRead/>}/>
 
             {/** 1:1 문의 관리 탭 */}
+            <Route path="/voc/list" element={<AdminVocList/>}/>
+
 
             {/** 이용자 관리 탭 */}
             <Route path="/users/list" element={<AdminUsersList/>}/>

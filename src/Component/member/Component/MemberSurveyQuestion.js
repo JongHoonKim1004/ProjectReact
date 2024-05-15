@@ -387,8 +387,8 @@ const MemberSurveyQuestion = () => {
                               {question.question.questionType === "radio" && (
                                 <>
                                   {Array.isArray(question.options) && question.options.map((option, i) => (
-                                    <>
-                                      <InputGroup key={i} className='mb-2'>
+                                    <div className='mb-4'>
+                                      <InputGroup key={i}>
                                         <InputGroup.Text id={"radio" + index + "-" + i}>{i + 1}</InputGroup.Text>
                                         <Form.Control
                                           type="text"
@@ -403,7 +403,7 @@ const MemberSurveyQuestion = () => {
                                         />
                                       </InputGroup>
                                       <Form.Text id={"radio" + i} >조기 종료할 질문은 오른쪽 체크박스를 체크해 주세요</Form.Text>
-                                    </>
+                                    </div>
                                   ))}
                                   <Row>
                                     <Col><Button variant='primary' onClick={() => addOptions(question.id)} disabled={!question.isTemporary}>선택지 추가하기</Button></Col>

@@ -42,8 +42,8 @@ const AdminMemberList = () => {
                 </tr>
               </thead>
               <tbody>
-                {memberList.map((member) => (
-                  <tr>
+                {memberList.map((member, index) => (
+                  <tr key={index}>
                     <td>
                       <Link to={`/admin/member/read/${member.memberId}`} style={{textDecoration: "none", color: "#111"}}>
                         {member.name}

@@ -1,9 +1,15 @@
 import React, { useEffect } from 'react';
 import { Button, Card, Col, Row, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Dahboard = () => {
-  
+  // useNavigate
+  const navigation = useNavigate();
+
+  // redux
+  const dispatch = useDispatch();
+  const { member, memberPoint } = useSelector(state => state.auth);
   useEffect(() => {
     // 화면 렌더링 시 위로 스크롤
     window.scroll(0,0);
@@ -53,7 +59,9 @@ const Dahboard = () => {
                 </Col>
                 <Col>
                   <p align="right">포인트 잔액</p>
-                  <p align="right">1</p>
+                  {memberPoint ? (
+                    <p align="right">{memberPoint.pointBalance}</p>
+                  ) : null}
                 </Col>
               </Row>
             </Card.Body>

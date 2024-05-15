@@ -1,7 +1,68 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import ClassicEditor from '../ckeditor/build/ckeditor';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import { useNavigate } from 'react-router-dom';
+
 
 const Voc = () => {
+  // useNavigate
+  const navigation = useNavigate();
+
+  // redux
+  const dispatch = useDispatch();
+  const {user, token} = useSelector(state => state.auth);
+
+  // useState
+  const [title, setTitle] = useState("");
+  const [writer, setWriter] = useState(user.name);
+  const [content, setContent] = useState("");
+
+  // submit
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    // 작성자 검증
+    if(writer == null){
+      alert("잘못된 접근입니다.");
+      navigation('/');
+    }
+
+    // 입력 검증
+    if(title == null || content == null){
+      alert("제목과 내용을 채워주세요");
+      return false;
+    }
+
+    // VOC 만들기
+    let voc = {
+      title: title,
+      writer: writer,
+      content: content,
+      reply: false
+    }
+
+    // fetch
+    fetch("//localhost:8080/voc/create",{
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token,
+      },
+      body: JSON.stringify(voc)
+    }).then(response => response.text())
+    .then(result => {
+      console.log(result);
+      if(result == "VOC Saved"){
+        alert("등록에 성공했습니다.");
+        navigation('/myVoc');
+      } else {
+        alert("등록에 실패했습니다");
+      }
+    })
+  }
+
   return (
     <div>
       <Container style={{ backgroundColor: "RGB(240, 240, 240)" }}>
@@ -18,7 +79,7 @@ const Voc = () => {
         </Row>
         <Row className="justify-content-md-center mt-4">
           <Col md="8">
-            <Form>
+            <Form onSubmit={handleSubmit}>
               <Form.Group as={Row} className='mb-3' controlId='formTextTitle'>
                 <Form.Label column sm="2">제목</Form.Label>
                 <Col sm="10">
@@ -28,13 +89,43 @@ const Voc = () => {
               <Form.Group as={Row} className='mb-3' controlId='formTextWriter'>
                 <Form.Label column sm="2">작성자</Form.Label>
                 <Col sm="10">
-                  <Form.Control name="writer" id="writer" plaintext readonly defaultValue={"zima0412@gmail.com"}/>
+                  <Form.Control name="writer" id="writer" plaintext readonly value={writer}/>
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className='mb-3' controlId='formTextContent'>
                 <Form.Label column sm="2">내용</Form.Label>
                 <Col sm="10">
-                  <Form.Control as={"textarea"} rows={5} cols={10} style={{resize: "none", overflow: "scroll"}} name="content" id="content"/>
+                <CKEditor
+                  editor={ClassicEditor}
+                  config={{
+                    toolbar: [
+                      'heading', '|', 'bold', 'italic', '|', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+                      'insertTable', 'tableColumn', 'tableRow', 'mergeTableCells', '|',
+                      'undo', 'redo', 'imageUpload'
+                    ],
+                    image: {
+                      toolbar: [
+                        'imageTextAlternative', 'imageStyle:full', 'imageStyle:side'
+                      ]
+                    },
+                    simpleUpload: {
+                      uploadUrl: 'http://example.com/image/upload', // 서버의 이미지 업로드 URL
+                      headers: {
+                        'X-CSRF-TOKEN': 'CSFR-Token',
+                        Authorization: 'Bearer <JSON Web Token>'
+                      }
+                    }
+                  }}
+                  data=""
+                  onReady={editor => {
+                    console.log('Editor is ready to use!', editor);
+                  }}
+                  onChange={(event, editor) => {
+                    const data = editor.getData();
+                    console.log({ event, editor, data });
+                    setContent(data);
+                  }}
+                />
                 </Col>
               </Form.Group>
               <Form.Group as={Row}>

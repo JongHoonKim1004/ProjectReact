@@ -7,6 +7,7 @@ const AdminAdminCreate = () => {
 
   // 관리자 정보 state 생성
   const [name, setName] = useState();
+  const [nameChecked, setNameChecked] = useState();
   const [nickname, setNickname] = useState();
   const [password, setPassword] = useState();
   const [passwordCheck, setPasswordCheck] = useState();
@@ -33,6 +34,23 @@ const AdminAdminCreate = () => {
     setEmployeeNo(e.target.value);
   }
 
+  window.usernameCheck = (name) => {
+    setNameChecked(name);
+    console.log("Username Checked : ", name);
+  }
+
+  // 아이디 중복확인
+  const idCheck = (e) => {
+      
+    if(name !== undefined){
+      window.open(`http://localhost:3000/idCheck?username=${name}`, "_blank", "width=700, height=500, left=100, top=100")
+    } else {
+      e.preventDefault();
+      alert("아이디를 입력해주세요");
+    }
+    
+  }
+  
   // 제출시 실행할 function
   const handleSubmit = (e) => {
     // 서버 요청 전 확인
@@ -80,8 +98,11 @@ const AdminAdminCreate = () => {
           <Form className='bg-white p-5' method="post">
             <Form.Group as={Row} className='mb-3'>
               <Form.Label column sm="2">아이디</Form.Label>
-              <Col sm="10">
+              <Col sm="5">
                 <Form.Control type="text" name="name" id="name" value={name} onChange={handelName}/>
+              </Col>
+              <Col sm="5">
+                <Button variant='primary' onClick={idCheck}>중복 확인</Button>
               </Col>
             </Form.Group>
             <Form.Group as={Row} className='mb-3'>

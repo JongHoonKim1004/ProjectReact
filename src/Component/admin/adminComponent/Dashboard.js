@@ -12,6 +12,23 @@ const Dashboard = () => {
     // 화면 제일 위로
     window.scroll(0,0);
 
+    // Call all Lists
+    const fetchLists = async () => {
+      try {
+        // fetch()를 사용하여 서버로부터 데이터 요청
+        const response = await fetch(`http://localhost:8080/users/list`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();  // 응답 데이터를 JSON 형태로 파싱
+        console.log(data);
+        setUsersList(data);  // 상태 업데이트
+      } catch (error) {
+        console.error('Fetching users failed:', error);
+      }
+    };
+
+    fetchLists();
 
   },[]);
   return (
@@ -33,7 +50,7 @@ const Dashboard = () => {
                   </Row>
                   <Row>
                     <span className="usersNum" style={{ textAlign: "right" }}>
-                      12
+                      {usersList.length}
                     </span>
                   </Row>
                 </Col>
@@ -161,28 +178,24 @@ const Dashboard = () => {
                   <th>아이디</th>
                   <th>이름</th>
                   <th>연락처</th>
-                  <th>가입일</th>
+                  <th>자세히보기</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>Jacob</td>
-                  <td>Thornton</td>
-                  <td>@fat</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>Larry the Bird</td>
-                  <td>Larry the Bird</td>
-                  <td>@twitter</td>
-                </tr>
+                {usersList.map((user, index) => (
+                  <tr key={index}>
+                    <td>{user.name}</td>
+                    <td>{user.nickname}</td>
+                    <td>{user.phone}</td>
+                    <td>
+                      <Link to={"/admin/users/read/" + user.usersId}>
+                        <Button size="sm">자세히보기</Button>
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+                
+                
               </tbody>
             </Table>
           </Row>

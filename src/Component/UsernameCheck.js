@@ -74,11 +74,13 @@ const UsernameCheck = () => {
                 </Row>
               </Col>
             </Row>
+          {canUse && (
             <Row className='p-5 pt-2' style={{justifyContent: "center"}}>
               <Col sm="3">
                 <Button variant='primary' onClick={() => usernameOk(username)} size='sm'>사용하기</Button>
               </Col>
             </Row>
+          )}
           </Col>
         </Row>
       </div>

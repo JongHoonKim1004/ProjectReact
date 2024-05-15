@@ -8,6 +8,9 @@ const initialState = {
   loginType: localStorage.getItem('loginType') || null,
   user: null,
   userPoint: null,
+  admin: null,
+  member: null,
+  memberPoint: null,
 };
 
 
@@ -22,8 +25,9 @@ const authSlice = createSlice({
       localStorage.setItem('token', action.payload);
 
       try {
+        state.token = action.payload;
         const decoded = jwt_decode(action.payload);
-        state.token = decoded;
+        state.userInfo = decoded;
       } catch (error) {
         console.error("Invalid token", error);
         state.token = null;
@@ -35,6 +39,9 @@ const authSlice = createSlice({
       state.user = null;
       state.userPoint = null;
       state.loginType = null;
+      state.admin = null;
+      state.member = null;
+      state.memberPoint = null;
       localStorage.removeItem('token');
       localStorage.removeItem('loginType');
     },
@@ -47,9 +54,18 @@ const authSlice = createSlice({
     },
     setUserPoint: (state, action) => {
       state.userPoint = action.payload;
+    },
+    setAdmin: (state, action) => {
+      state.admin = action.payload;
+    },
+    setMember: (state, action) => {
+      state.member = action.payload;
+    },
+    setMemberPoint: (state, action) => {
+      state.memberPoint = action.payload;
     }
   },
 });
 
-export const { setToken, clearToken, setLoginType, setUser, setUserPoint } = authSlice.actions;
+export const { setToken, clearToken, setLoginType, setUser, setUserPoint, setAdmin, setMember, setMemberPoint } = authSlice.actions;
 export default authSlice.reducer;

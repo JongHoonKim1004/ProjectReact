@@ -1,22 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const MemberInfoModify = () => {
   // useNavigate 설정
   const navigation = useNavigate();
 
+  // redux
+  const { member } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
+
   // state 설정
-  const [memberId, setMemberId] = useState("");
-  const [name, setName] = useState("");
-  const [compNo, setCompNo] = useState("");
-  const [nickname, setNickname] = useState("");
+  const [memberId, setMemberId] = useState(member.memberId);
+  const [name, setName] = useState(member.name);
+  const [compNo, setCompNo] = useState(member.compNo);
+  const [nickname, setNickname] = useState(member.nickname);
   const [password, setPassword] = useState("");
   const [passwordCheck,setPasswordCheck] = useState("");
-  const [phone, setPhone] = useState("");
-  const [zipNo, setZipNo] = useState("");
-  const [addr, setAddr] = useState("");
-  const [addrDetail, setAddrDetail] = useState("");
+  const [phone, setPhone] = useState(member.phone);
+  const [zipNo, setZipNo] = useState(member.zipNo);
+  const [addr, setAddr] = useState(member.addr);
+  const [addrDetail, setAddrDetail] = useState(member.addrDetail);
 
   // 본인 정보 호출 후 state 에 저장
   
@@ -28,7 +33,7 @@ const MemberInfoModify = () => {
   return (
     <main className="p-5">
       <div style={{ padding: "16px 24px", color: "#44596e" }}>
-        <h1>회원 정보 변경</h1>
+        <h1>사업자 정보 변경</h1>
       </div>
       <Row className="p-5 justify-content-md-center">
         <Col md="8">

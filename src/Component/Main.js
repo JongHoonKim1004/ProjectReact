@@ -21,11 +21,56 @@ const Main = () => {
 
   // redux 설정
   const dispatch = useDispatch();
-  const {token, user, userPoint} = useSelector(state => state.auth);
+  const {token, user, userPoint, admin, member, memberPoint} = useSelector(state => state.auth);
 
   // state
   const [name, setName] = useState("");
-  const [password,setPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [surveyList, setSurveyList] = useState([]);
+  const [noticeList, setNoticeList] = useState([]);
+
+  // call 
+  useEffect(() => {
+    const fetchSurvey = async () => {
+      try{
+        const response = await fetch("//localhost:8080/survey/list/active");
+        const response2 = await fetch("//localhost:8080/notice/list");
+        if(!response.ok || !response2.ok){
+          console.error("Network is not good");
+        }
+
+        const data = await response.json();
+        const data2 = await response2.json();
+
+        console.log(data);
+        console.log(data2);
+
+        setSurveyList(data);
+        setNoticeList(data2);
+      } catch(error){
+        console.error("Failed get Fetch, Fetch Failed");
+      }
+    }
+
+    fetchSurvey();
+  },[]);
+
+// 날짜 input 변경
+const formatDate = (date) => {
+  const d = new Date(date);
+  let month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = '' + d.getFullYear();
+
+  if(month.length < 2){
+    month = '0' + month;
+  }
+  if(day.length < 2){
+    day = '0' + day;
+  }
+
+  return [year, month, day].join('-');
+}
 
   // login
   const handleLogin = async (e) => {
@@ -76,11 +121,11 @@ const Main = () => {
         navigation('/', {replace: false});
         return true;
       } else {
-        console.error('Failed to save Survey:', response.statusText);
+        console.error('Failed to login Users:', response.statusText);
         return false;
       }
     } catch (error) {
-      console.error('Error saving Survey:', error);
+      console.error('Error login Users:', error);
       return false;
     }
   }
@@ -143,24 +188,52 @@ const Main = () => {
                               <h4>{user.nickname} 님, 환영합니다</h4>
                             </Col>
                           )}
-                        </Row>
-                        <Row className="pt-3 pb-5">
-                          <Col>
-                            <span>사용 가능한 포인트</span>
-                          </Col>
-                          {userPoint && (
+                          {admin && (
                             <Col>
-                              <span>{userPoint.pointBalance} 포인트</span>
+                              <h4>{admin.nickname} 님, 환영합니다</h4>
+                            </Col>
+                          )}
+                          {member && (
+                            <Col>
+                              <h4>{member.nickname} 님, 환영합니다</h4>
                             </Col>
                           )}
                         </Row>
+                        {userPoint && (
+                          <Row className="pt-3 pb-5">
+                            <Col>
+                              <span>사용 가능한 포인트</span>
+                            </Col>
+                            <Col>
+                              <span>{userPoint.pointBalance} 포인트</span>
+                            </Col>
+                          </Row>
+                        )}
+                        {memberPoint && (
+                          <Row className="pt-3 pb-5">
+                            <Col>
+                              <span>사용 가능한 포인트</span>
+                            </Col>
+                            <Col>
+                              <span>{memberPoint.pointBalance} 포인트</span>
+                            </Col>
+                          </Row>
+                        )}
                         <Row className="pb-3">
                           <Col className="d-grid">
-                            <Button 
+                            {admin && null}
+                            {user && (
+                              <Button 
                               variant="success"
                               onClick={() => navigation('/myInfo')}
                             >회원정보 변경</Button>
-                            
+                            )}
+                            {member && (
+                              <Button 
+                              variant="success"
+                              onClick={() => navigation('member/infoModify')}
+                            >회원정보 변경</Button>
+                            )}
                           </Col>
                           <Col className="d-grid">
                             <Button 
@@ -283,6 +356,9 @@ const Main = () => {
                         </Button>
                       </Col>
                     </Row>
+                    <Row className="pt-2">
+                      <p style={{fontSize: "12px", textAlign: "center"}}>{'※'} 소셜로그인은 상단 '로그인' 버튼으로 이동 후 로그인 해주세요</p>
+                    </Row>
                   </Form>
                   )
                 }
@@ -310,18 +386,32 @@ const Main = () => {
                   </Col>
                 </Row>
                 <Row style={{ height: "430px", margin: "20px 0" }}>
-                  <div className="col-md-3">
-                    <Card>
-                      <ListGroup variant="flush">
-                        <ListGroup.Item style={{ height: "90px" }}>
-                          여기에 제목이 들어갑니다
-                        </ListGroup.Item>
-                        <ListGroup.Item style={{ height: "90px" }}>
-                          여기에 정보가 들어갑니다
-                        </ListGroup.Item>
-                      </ListGroup>
-                    </Card>
-                  </div>
+                  {surveyList.map((survey, index) => (
+                    <div className="col-md-3" key={index}>
+                      <Card>
+                        <ListGroup variant="flush">
+                          <ListGroup.Item style={{ height: "90px" }}>
+                            <Button variant="link"
+                              onClick={(e) => window.open(`/survey/title/${survey.surveyId}`, "_blank", "width=950, height=720, left=100, top=100")}
+                              style={{textDecoration: "none"}}
+                            >
+                              {survey.name} 
+                            </Button>
+                          </ListGroup.Item>
+                          <ListGroup.Item style={{ height: "90px" }}>
+                            <Row className="mb-4">
+                              <Col>
+                              {formatDate(survey.startDate) + "~" + formatDate(survey.endDate)}
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col style={{textAlign: "right"}}>{survey.point + " 포인트 지급"}</Col>
+                            </Row>
+                          </ListGroup.Item>
+                        </ListGroup>
+                      </Card>
+                    </div>
+                  ))}
                 </Row>
               </Col>
               <Col md="1"></Col>
@@ -338,12 +428,26 @@ const Main = () => {
         <Row>
           <Col>
             <Row>
-              <Col md="4">
-                <Row className="mb-3">
-                  <Link to="/admin">관리자 페이지</Link>
+              <Col md="4"className="p-3">
+                <Row className="pb-3">
+                  <Col md="11">
+                    <img alt="" src="/img/main/mNoti2_tit.gif"/>
+                  </Col>
+                  <Col md="1">
+                    <Link to="/notice" style={{textDecoration: "none", color: "#111"}}>
+                      {"+"}
+                    </Link>
+                  </Col>
                 </Row>
                 <Row>
-                  <Link to="/member">사업자 페이지</Link>
+                  {noticeList.map((notice, index) => (
+                    <Col sm="12" key={index}>
+                      <Link to={"/notice/read/" + notice.id} style={{textDecoration: "none", color: "#111"}}>
+                        {notice.title}
+                      </Link>
+                    </Col>
+                  ))}
+                  
                 </Row>
               </Col>
               <Col md="8">

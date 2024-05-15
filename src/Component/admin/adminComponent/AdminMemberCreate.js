@@ -173,7 +173,7 @@ const AdminMemberCreate = () => {
               </Col>
             </Form.Group>
             <Form.Group as={Row} className='mb-3'>
-              <Form.Label column sm="2">이름</Form.Label>
+              <Form.Label column sm="2">상호명</Form.Label>
               <Col sm="10">
                 <Form.Control type="text" name="nickname" id="nickname" value={nickname} onChange={handleNickname}/>
               </Col>

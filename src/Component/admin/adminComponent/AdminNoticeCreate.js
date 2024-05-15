@@ -3,14 +3,19 @@ import { Button, Col, Row, Form } from 'react-bootstrap';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '../../../ckeditor/build/ckeditor';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 const AdminNoticeCreate = () => {
   // useNavigate 설정
   const navigation = useNavigate();
 
+  // redux
+  const dispatch = useDispatch();
+  const {admin} = useSelector(state => state.auth);
+
   // state 설정
   const [title, setTitle] = useState('');
-  const [writer, setWriter] = useState('');
+  const [writer, setWriter] = useState(admin.nickname);
   const [content, setContent] = useState('');
 
   const handleSubmit = () => {
@@ -42,7 +47,7 @@ const AdminNoticeCreate = () => {
   return (
     <main>
       <div style={{ padding: "16px 24px", color: "#44596e" }}>
-        <h1>새 관리자 생성</h1>
+        <h1>새 공지사항 작성</h1>
       </div>
       <Row className='p-5 justify-content-md-center'>
         <Col md="8">
@@ -67,7 +72,8 @@ const AdminNoticeCreate = () => {
                   name="writer"
                   id="writer"
                   value={writer}
-                  onChange={(e) => setWriter(e.target.value)}
+                  readOnly
+                  plaintext
                 />
               </Col>
             </Form.Group>

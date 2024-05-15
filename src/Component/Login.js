@@ -11,11 +11,19 @@ const Login = () => {
 
   // redux 설정
   const dispatch = useDispatch();
-  const {token, user, userPoint} = useSelector(state => state.auth);
+  const {admin , user, member} = useSelector(state => state.auth);
 
   // state
   const [name, setName] = useState("");
   const [password,setPassword] = useState("");
+
+  // 로그인 하고 접근하는지 확인
+  useEffect(() => {
+    if(admin != null || user != null || member != null){
+      alert("잘못된 접근입니다");
+      navigation('/');
+    }
+  },[]);
 
   // login
   const handleLogin = async (e) => {

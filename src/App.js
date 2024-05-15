@@ -23,6 +23,9 @@ import Post from './Component/daum/Post';
 import AdminMain from './Component/admin/AdminMain';
 import './font-awesome-4.7.0/css/font-awesome.css';
 import MemberMain from './Component/member/MemberMain';
+import AdminLogin from './Component/admin/AdminLogin';
+import MemberLogin from './Component/member/MemberLogin';
+import SurveyTitle from './Component/survey/SurveyTitle';
 
 
 function App() {
@@ -32,6 +35,7 @@ function App() {
         {/* Routes 내부에 모든 Route를 포함 */}
         <Routes>
           <Route path="/" element={<HeaderAndFooter><Main /></HeaderAndFooter>} />
+
           {/** 로그인, 로그아웃 , 회원가입 등 */}
           <Route path="/login" element={<HeaderAndFooter><Login/></HeaderAndFooter>}/>
           <Route path="/register_terms" element={<HeaderAndFooter><Register_terms/></HeaderAndFooter>}/>
@@ -54,12 +58,16 @@ function App() {
           <Route path="/faq" element={<HeaderAndFooter><Faq/></HeaderAndFooter>}/>
           <Route path="/voc" element={<HeaderAndFooter><Voc/></HeaderAndFooter>}/>
 
-
           {/** 관리자 페이지 전체 */}
+          <Route path="/admin/login" element={<AdminLogin/>}/>
           <Route path="/admin/*" element={<AdminMain/>}/>
 
           {/** 사업자 페이지 전체 */}
+          <Route path="/member/login" element={<MemberLogin/>}/>
           <Route path="/member/*" element={<MemberMain/>}/>
+
+          {/** 설문조사 관련 전체 */}
+          <Route path="/survey/title/:surveyId" element={<SurveyTitle/>}/>
         </Routes>
       </div>
     

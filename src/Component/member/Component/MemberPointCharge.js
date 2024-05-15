@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setMemberPoint } from "../../../authSlice";
 
 const MemberPointCharge = () => {
   // useNavigate 설정
   const navigate = useNavigate();
 
+  // redux
+  const dispatch = useDispatch();
+  const {member, memberPoint} = useSelector(state => state.auth);
+
   // state 설정
-  const [member, setMember] = useState({});
   const [price, setPrice] = useState(0);
   const [total, setTotal] = useState(0);
 
@@ -21,7 +26,7 @@ const MemberPointCharge = () => {
     let newPrice = parseInt(e.target.value) || 0;
     setPrice(newPrice);
 
-    let totalPoint = newPrice + 10000;
+    let totalPoint = newPrice + memberPoint.pointBalance;
     setTotal(totalPoint);
   }
   
@@ -38,11 +43,11 @@ const MemberPointCharge = () => {
       merchant_uid: `mid_${new Date().getTime()}`,   // 주문번호
       amount: price,                                 // 결제금액
       name: '포인트 충전',                  // 주문명
-      buyer_name: '홍길동',                           // 구매자 이름
-      buyer_tel: '01012341234',                     // 구매자 전화번호
-      buyer_email: 'example@example',               // 구매자 이메일
-      buyer_addr: '신사동 661-16',                    // 구매자 주소
-      buyer_postcode: '06018',                      // 구매자 우편번호
+      buyer_name: member.nickname,                           // 구매자 이름
+      buyer_tel: member.phone,                     // 구매자 전화번호
+      buyer_email: member.name,               // 구매자 이메일
+      buyer_addr: member.addr,                    // 구매자 주소
+      buyer_postcode: member.zipNo,                      // 구매자 우편번호
       
     }
 
@@ -63,7 +68,7 @@ const MemberPointCharge = () => {
       alert('결제에 성공했습니다');
 
       // 서버로 사업자 포인트 충전 요청 보내기
-      fetch(`//localhost:8080/member/point/memberCharge/{memberId}/${point}`,{
+      fetch(`//localhost:8080/member/point/memberCharge/${member.memberId}/${price}`,{
         method: "post",
         headers: {
           "Content-Type" : "application/json"
@@ -72,6 +77,14 @@ const MemberPointCharge = () => {
       .then(result => {
         console.log(result);
         alert("충전이 완료되었습니다.");
+        dispatch(setMemberPoint({
+          memberId: memberPoint.memberId,
+          pointTotal: memberPoint.pointTotal + price,
+          pointBalance: memberPoint.pointBalance + price,
+          pointUsed: memberPoint.pointUsed,
+          pointId: memberPoint.pointId
+        }))
+
         navigate('/member/point/log');
       })
     } else {
@@ -98,7 +111,7 @@ const MemberPointCharge = () => {
                 <Form.Label column sm="3">현재 포인트 잔액</Form.Label>
                 <Col sm="9">
                   <InputGroup>
-                    <Form.Control type="number" readOnly value={"10000"} style={{textAlign: "right"}}/>
+                    <Form.Control type="number" readOnly value={memberPoint.pointBalance} style={{textAlign: "right"}}/>
                     <InputGroup.Text>포인트</InputGroup.Text>
                   </InputGroup>
                 </Col>

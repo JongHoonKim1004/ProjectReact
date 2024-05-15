@@ -7,7 +7,7 @@ import { clearToken } from "../authSlice";
 const Header = () => {
   const navigation = useNavigate();
   const dispatch = useDispatch();
-  const {token, user, userPoint} = useSelector(state => state.auth);
+  const {token, user, admin, member} = useSelector(state => state.auth);
 
   const handleLogout = (e) => {
     let checkLogout = confirm("정말로 로그아웃 하시겠습니까?");
@@ -36,14 +36,38 @@ const Header = () => {
                 {token ? (
                   <Button variant="link" style={{textDecoration: "none", color: "#999", height: "16px", fontSize: "12px"}} className="p-0" onClick={handleLogout}>로그아웃</Button>
                 ) : (
-                  <Link style={{textDecoration: "none", color: "#999"}} to="/login">로그인</Link>
+                  <>
+                    <Link style={{textDecoration: "none", color: "#999"}} to="/login">로그인</Link>
+                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                    <Link style={{textDecoration: "none", color: "#999"}} to="/member/login">사업자 로그인</Link>
+                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                    <Link style={{textDecoration: "none", color: "#999"}} to="/admin/login">관리자 로그인</Link>
+                  </>
                 )}
-                
                 {user ? (
                   <div>
-                    
                   <span style={{color: "#999"}}>{user.nickname} 님</span> 
                   &nbsp;&nbsp;|&nbsp;&nbsp;
+                  </div>
+                ) : null}
+                {admin ? (
+                  <div>
+                    <Link to="/admin"  style={{textDecoration: "none", color: "#999"}} >
+                      관리자 페이지
+                    </Link>
+                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                    <span style={{color: "#999"}}>{admin.nickname} 님</span> 
+                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                  </div>
+                ) : null}
+                {member ? (
+                  <div>
+                    <Link to="/member"  style={{textDecoration: "none", color: "#999"}} >
+                      사업자 페이지
+                    </Link>
+                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                    <span style={{color: "#999"}}>{member.nickname} 님</span> 
+                    &nbsp;&nbsp;|&nbsp;&nbsp;
                   </div>
                 ) : null}
               </Col>
@@ -60,7 +84,7 @@ const Header = () => {
                     </NavDropdown>
                   </Col>
                   <Col  style={{display: "flex"}} className="justify-content-md-center">
-                    <Nav.Link style={{fontSize: "18px", fontWeight: "650", color: "#555"}}>조사참여</Nav.Link>
+                    <Nav.Link style={{fontSize: "18px", fontWeight: "650", color: "#555"}} to="/survey/list">조사참여</Nav.Link>
                   </Col>
                   <Col  style={{display: "flex"}} className="justify-content-md-center">
                     <NavDropdown title="이벤트" id="navbarScrollingDropdown3" style={{fontSize: "18px", fontWeight: "650", color: "#555"}}>

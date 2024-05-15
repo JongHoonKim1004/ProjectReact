@@ -9,7 +9,7 @@ const AdminSidebar = () => {
         <Menu>
           <MenuItem component={<Link to={'/admin'}/>}>대시보드</MenuItem>
           <MenuItem component={<Link to={'/admin/survey/list'}/>}>설문조사 관리</MenuItem>
-          <MenuItem>1:1 문의 관리</MenuItem>
+          <MenuItem component={<Link to={"/admin/voc/list"}/>}>1:1 문의 관리</MenuItem>
           <MenuItem component={<Link to={"/admin/users/list"}/>}>이용자 관리</MenuItem>
         </Menu>
         <Menu>

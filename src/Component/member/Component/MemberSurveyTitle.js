@@ -5,21 +5,26 @@ import ClassicEditor from '../../../ckeditor/build/ckeditor';
 import { useNavigate } from 'react-router-dom';
 import ReactDatePicker from 'react-datepicker';
 import { addDays } from 'date-fns';
+import { useDispatch, useSelector } from 'react-redux';
 
 const MemberSurveyTitle = () => {
   // useNavigate
   const navigate = useNavigate();
 
+  // redux
+  const dispatch = useDispatch();
+  const {member} = useSelector(state => state.auth);
+
   // state 설정
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [surveyMember, setSurveyMember] = useState("");
+  const [surveyMember, setSurveyMember] = useState(member.memberId);
   const [startDate, setStartDate] = useState();
   const [formattedStartDate, setFormattedStartDate] = useState();
   const [endDate, setEndDate] = useState();
   const [formattedEndDate, setFormattedEndDate]= useState();
-  const [pointAtLeast, setPointAtLeast] = useState(0);
-  const [point, setPoint] = useState(100);
+  const [pointAtLeast, setPointAtLeast] = useState(50);
+  const [point, setPoint] = useState(200);
 
   // onChange
   const handleStartDate = (date) => {
@@ -183,8 +188,8 @@ const MemberSurveyTitle = () => {
               <Form.Group as={Row} className='mb-3'>
                 <Form.Label column sm="3">사업자</Form.Label>
                 <Col sm="9">
-                  <Form.Control name="surveyMember" id="surveyMember" value={surveyMember} onChange={(e) => setSurveyMember(e.target.value)} aria-describedby='memberHelp'/>
-                  <Form.Text id="memberHelp">이 부분은 별도로 설정하지 않으셔도 됩니다</Form.Text>
+                  <Form.Control name="surveyMember" id="surveyMember" value={member.memberId} readOnly plaintext />
+                
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className='mb-3 pt-5'>
@@ -195,7 +200,7 @@ const MemberSurveyTitle = () => {
                     selected={startDate} 
                     onChange={handleStartDate} 
                     className="form-control"
-                    maxDate={addDays(new Date(), 0)}/>
+                    minDate={addDays(new Date(), 0)}/>
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className='mb-3'>
@@ -206,7 +211,7 @@ const MemberSurveyTitle = () => {
                     selected={endDate} 
                     onChange={handleEndDate} 
                     className="form-control"
-                    maxDate={addDays(new Date(), 0)}/>
+                    minDate={addDays(new Date(), 0)}/>
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className='mb-4 pt-5'>
