@@ -23,6 +23,7 @@ import AdminFaqCreate from "./adminComponent/AdminFaqCreate";
 import AdminLogin from "./AdminLogin";
 import { useSelector } from "react-redux";
 import AdminVocList from "./adminComponent/AdminVocList";
+import AdminVocRead from "./adminComponent/AdminVocRead";
 
 const AdminMain = () => {
   // useNavigate
@@ -58,11 +59,11 @@ const AdminMain = () => {
 
             {/** 설문조사 관리 탭 */}
             <Route path="/survey/list" element={<AdminSurveyList/>}/>
-            <Route path="/survey/read" element={<AdminSurveyRead/>}/>
+            <Route path="/survey/read/:surveyId" element={<AdminSurveyRead/>}/>
 
             {/** 1:1 문의 관리 탭 */}
             <Route path="/voc/list" element={<AdminVocList/>}/>
-
+            <Route path="/voc/read/:vocId" element={<AdminVocRead/>}/>
 
             {/** 이용자 관리 탭 */}
             <Route path="/users/list" element={<AdminUsersList/>}/>
@@ -82,6 +83,7 @@ const AdminMain = () => {
             <Route path="/notice/list" element={<AdminNoticeList/>}/>
             <Route path="/notice/read/:id" element={<AdminNotiveRead/>}/>
             <Route path="/notice/create" element={<AdminNoticeCreate/>}/>
+
             {/** 자주묻는 질문 관리 탭 */}
             <Route path="/faq/list" element={<AdminFaqList/>}/>
             <Route path="/faq/read/:faqId" element={<AdminFaqRead/>}/>

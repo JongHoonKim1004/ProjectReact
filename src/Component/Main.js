@@ -441,7 +441,7 @@ const formatDate = (date) => {
                 </Row>
                 <Row>
                   {noticeList.map((notice, index) => (
-                    <Col sm="12" key={index}>
+                    <Col sm="12" key={index} className="pb-1">
                       <Link to={"/notice/read/" + notice.id} style={{textDecoration: "none", color: "#111"}}>
                         {notice.title}
                       </Link>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Row, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -10,10 +10,54 @@ const Dahboard = () => {
   // redux
   const dispatch = useDispatch();
   const { member, memberPoint } = useSelector(state => state.auth);
+
+  // useState
+  const [surveyList, setSurveyList] = useState([]);
+  
+
+  // all list fetch
   useEffect(() => {
     // 화면 렌더링 시 위로 스크롤
     window.scroll(0,0);
+
+    const fetchMemberDashboard = async () => {
+      try{
+        const response = await fetch(`//localhost:8080/survey/list/member/${member.memberId}`);
+        if(!response.ok){
+          console.error("Network is not good");
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setSurveyList(data);
+      } catch(error){
+        console.error("Fetch Failed in Member Dashboard");
+      }
+
+    }
+
+    fetchMemberDashboard();
   },[]);
+
+    // 날짜 input 변경
+    const formatDate = (date) => {
+      const d = new Date(date);
+      let month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = '' + d.getFullYear();
+  
+      if(month.length < 2){
+        month = '0' + month;
+      }
+      if(day.length < 2){
+        day = '0' + day;
+      }
+  
+      return [year, month, day].join('-');
+    }
+
+    
+
   return (
     <main className="p-5">
       <div style={{ padding: "16px 24px", color: "#44596e" }}>
@@ -29,7 +73,7 @@ const Dahboard = () => {
                 </Col>
                 <Col>
                   <p align="right">만든 설문조사 수</p>
-                  <p align="right">1</p>
+                  <p align="right">{surveyList.length}</p>
                 </Col>
               </Row>
             </Card.Body>
@@ -78,30 +122,20 @@ const Dahboard = () => {
               <thead>
                 <tr>
                   <th>설문 제목</th>
-                  <th>설문 사업자</th>
-                  <th>설문 응답자</th>
-                  <th>응답 시간</th>
+                  <th>설문 등록일</th>
+                  <th>설문 시작일</th>
+                  <th>설문 참여인원</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>Jacob</td>
-                  <td>Thornton</td>
-                  <td>@fat</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>Larry the Bird</td>
-                  <td>Larry the Bird</td>
-                  <td>@twitter</td>
-                </tr>
+                {surveyList.map((survey, index) => (
+                  <tr>
+                    <td>{survey.name}</td>
+                    <td>{formatDate(survey.regDate)}</td>
+                    <td>{formatDate(survey.startDate)}</td>
+                    <td>{survey.surveyParticipate}</td>
+                  </tr>
+                ))}
               </tbody>
             </Table>
           </Row>

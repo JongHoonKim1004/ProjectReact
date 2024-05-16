@@ -1,8 +1,51 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Col, Row, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const AdminSurveyList = () => {
+  // useNavigate
+  const navigation = useNavigate();
+
+  // useState
+  const [surveyList, setSurveyList] = useState([]);
+
+  // 설문조사 목록 호출
+  useEffect(() => {
+    const fetchSurveyList = async () => {
+      try{
+        const response = await fetch("//localhost:8080/survey/list");
+        if(!response.ok){
+          console.error("Network is not good");
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setSurveyList(data);
+      } catch(error) {
+        console.error("Fetch Error in Admin Survey List");
+      }
+    }
+
+    fetchSurveyList();
+  },[]);
+
+  // 날짜 input 변경
+  const formatDate = (date) => {
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = '' + d.getFullYear();
+
+    if(month.length < 2){
+      month = '0' + month;
+    }
+    if(day.length < 2){
+      day = '0' + day;
+    }
+
+    return [year, month, day].join('-');
+  }
+
   return (
     <main className="p-5">
       <div style={{ padding: "16px 24px", color: "#44596e" }}>
@@ -23,18 +66,24 @@ const AdminSurveyList = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <Link to={'/admin/survey/read'} style={{textDecoration: "none", color: "#111"}}>
-                      1
-                    </Link>
-                  </td>
-                  <td>2</td>
-                  <td>3</td>
-                  <td>4</td>
-                  <td>5</td>
-                  <td>6</td>
-                </tr>
+                {surveyList.map((survey, index) => (
+                  <tr key={index}>
+                    <td>
+                      <Link to={`/admin/survey/read/` + survey.surveyId} style={{textDecoration: "none", color: "#111"}}>
+                        {survey.name}
+                      </Link>
+                    </td>
+                    <td>
+                      <Link to={"/admin/member/read/" + survey.memberId} style={{textDecoration: "none", color: "#111"}}>
+                        {survey.memberId}
+                      </Link>
+                    </td>
+                    <td>{formatDate(survey.regDate)}</td>
+                    <td>{formatDate(survey.startDate)}</td>
+                    <td>{formatDate(survey.endDate)}</td>
+                    <td>{survey.surveyParticipate}</td>
+                  </tr>
+                ))}
               </tbody>
             </Table>
           </Row>

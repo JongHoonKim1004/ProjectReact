@@ -1,5 +1,5 @@
 import { addDays } from "date-fns";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import ReactDatePicker from "react-datepicker";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,20 +14,31 @@ const MyInfo = () => {
   const dispatch = useDispatch();
   const { user, token } = useSelector(state => state.auth);
 
+  // 접근 전 일반회원 확인
+  useEffect(() => {
+    if(token == null){
+      alert("로그인 후 이용 가능합니다");
+      navigation('/login');
+    }
+    if(token != null && user == null){
+      alert("일반 회원만 이용 가능합니다");
+      navigation('/');
+    }
+  },[]);
 
   // 유저 정보 상태 설정
-  const [username, setUsername] = useState(user.name || "");
-  const [name, setName] = useState(user.nickname || "");
+  const [username, setUsername] = useState(user ? user.name : null);
+  const [name, setName] = useState(user ? user.nickname : null);
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
-  const [zipNo, setZipNo] = useState(user.zipNo || "");
-  const [addr, setAddr] = useState(user.addr || "");
-  const [birth, setBirth] = useState(user.birth || new Date());
-  const [occupation, setOccupation] = useState(user.occupation || null);
-  const [phone, setPhone] = useState(user.phone || "");
-  const [addrDetail, setAddrDetail] = useState(user.addrDetail || "");
-  const [gender, setGender] = useState(user.gender || null);
-  const [married, setMarried] = useState(user.married || null);
+  const [zipNo, setZipNo] = useState(user ? user.zipNo : null);
+  const [addr, setAddr] = useState(user ? user.addr : null);
+  const [birth, setBirth] = useState(user ? user.birth :  new Date());
+  const [occupation, setOccupation] = useState(user ? user.occupation : null);
+  const [phone, setPhone] = useState(user ? user.phone : null);
+  const [addrDetail, setAddrDetail] = useState(user ? user.addrDetail : null);
+  const [gender, setGender] = useState(user ? user.gender : null);
+  const [married, setMarried] = useState(user ? user.married : null);
 
   const handleMarried = (e) => {
     setMarried(e.target.value);
@@ -105,8 +116,6 @@ const MyInfo = () => {
     
   }
 
-  // navigate
-  const navigate = useNavigate();
 
   // onSubmit
   const handleSubmit = async (e) => {
@@ -137,7 +146,7 @@ const MyInfo = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/users/update/${token.sub}`, {
+      const response = await fetch(`http://localhost:8080/users/update/${user.userId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -187,7 +196,7 @@ const MyInfo = () => {
               <Form.Group as={Row} className='mt-3 mb-3'>
                 <Form.Label column sm="3">회원번호</Form.Label>
                 <Col sm="9">
-                  <Form.Control type='text' name="usersId" id="usersId" readOnly plaintext value={token.sub} />
+                  <Form.Control type='text' name="usersId" id="usersId" readOnly plaintext value={user ? user.userId : null} />
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className='mt-3 mb-3'>

@@ -6,7 +6,7 @@ const Footer = () => {
     <div>
       <Container className='pb-4 pt-4' style={{backgroundColor: "#666"}}>
         <Row>
-          <img alt="" src="img/footer/footer.png"/>
+          <img alt="" src="/img/footer/footer.png"/>
         </Row>
       </Container>
     </div>

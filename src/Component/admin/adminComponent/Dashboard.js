@@ -6,6 +6,25 @@ const Dashboard = () => {
   // 회원 목록, 설문조사 목록 state
   const [usersList, setUsersList] = useState([]);
   const [surveyList, setSurveyList] = useState([]);
+  const [vocList, setVocList] = useState([]);
+
+  // 날짜 input 변경
+  const formatDate = (date) => {
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = '' + d.getFullYear();
+
+    if(month.length < 2){
+      month = '0' + month;
+    }
+    if(day.length < 2){
+      day = '0' + day;
+    }
+
+    return [year, month, day].join('-');
+  }
+
 
   // 화면 호출시 바로 시행
   useEffect(() => {
@@ -17,12 +36,23 @@ const Dashboard = () => {
       try {
         // fetch()를 사용하여 서버로부터 데이터 요청
         const response = await fetch(`http://localhost:8080/users/list`);
+        const response2 = await fetch(`//localhost:8080/survey/list/active`);
+        const response3 = await fetch(`//localhost:8080/voc/list/all`);
+
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();  // 응답 데이터를 JSON 형태로 파싱
-        console.log(data);
+        const data2 = await response2.json();
+        const data3 = await response3.json();
+
+        console.log("usersList : " + data);
+        console.log("SurveyList: " + data2);
+        console.log("VocList: " + data3);
+
         setUsersList(data);  // 상태 업데이트
+        setSurveyList(data2);
+        setVocList(data3);
       } catch (error) {
         console.error('Fetching users failed:', error);
       }
@@ -71,7 +101,7 @@ const Dashboard = () => {
                   </Row>
                   <Row>
                     <span className="usersNum" style={{ textAlign: "right" }}>
-                      12
+                      {surveyList.length}
                     </span>
                   </Row>
                 </Col>
@@ -92,7 +122,7 @@ const Dashboard = () => {
                   </Row>
                   <Row>
                     <span className="usersNum" style={{ textAlign: "right" }}>
-                      12
+                      {vocList.length}
                     </span>
                   </Row>
                 </Col>
@@ -133,29 +163,19 @@ const Dashboard = () => {
                 <tr>
                   <th>설문 제목</th>
                   <th>설문 사업자</th>
-                  <th>설문 응답자</th>
-                  <th>응답 시간</th>
+                  <th>설문 등록일</th>
+                  <th>설문 시작일</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>Jacob</td>
-                  <td>Thornton</td>
-                  <td>@fat</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>Larry the Bird</td>
-                  <td>Larry the Bird</td>
-                  <td>@twitter</td>
-                </tr>
+                {surveyList.map((survey, index) => (
+                  <tr>
+                    <td>{survey.name}</td>
+                    <td>{survey.memberId}</td>
+                    <td>{formatDate(survey.regDate)}</td>
+                    <td>{formatDate(survey.startDate)}</td>
+                  </tr>
+                ))}
               </tbody>
             </Table>
           </Row>

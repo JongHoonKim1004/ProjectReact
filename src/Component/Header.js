@@ -22,7 +22,7 @@ const Header = () => {
         <Row>
           <Col md="3">
             <Link to="/">
-              <img alt="" src="img/header/h_logo.gif" height={"80px"}  className="p-2"/>
+              <img alt="" src="/img/header/h_logo.gif" height={"80px"}  className="p-2"/>
             </Link>
           </Col>
           <Col md="9">

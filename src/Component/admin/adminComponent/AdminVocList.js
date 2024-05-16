@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Col, Row, Table } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const AdminVocList = () => {
   // useNavigate
@@ -8,7 +8,7 @@ const AdminVocList = () => {
 
   // useState
   const [vocList, setVocList] = useState([]);
-  const [replyList, setReplyList] = useState([]);
+  
 
   // fetch
   useEffect(() => {
@@ -30,6 +30,23 @@ const AdminVocList = () => {
     fetchServer();
   },[]);
 
+  // 날짜 input 변경
+  const formatDate = (date) => {
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = '' + d.getFullYear();
+
+    if(month.length < 2){
+      month = '0' + month;
+    }
+    if(day.length < 2){
+      day = '0' + day;
+    }
+
+    return [year, month, day].join('-');
+  }
+
   return (
     <main className="p-5">
       <div style={{ padding: "16px 24px", color: "#44596e" }}>
@@ -47,6 +64,20 @@ const AdminVocList = () => {
                   <th>답변여부</th>
                 </tr>
               </thead>
+              <tbody>
+                {vocList.map((voc, index) => (
+                  <tr key={index}>
+                    <td>
+                      <Link to={"/admin/voc/read/" + voc.vocId}>
+                        {voc.title}
+                      </Link>
+                    </td>
+                    <td>{voc.writer}</td>
+                    <td>{formatDate(voc.regDate)}</td>
+                    <td>{voc.reply ? "답변완료" : "답변대기"}</td>
+                  </tr>
+                ))}
+              </tbody>
             </Table>
           </Row>
         </Col>

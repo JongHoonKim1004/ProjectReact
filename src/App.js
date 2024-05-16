@@ -26,9 +26,29 @@ import MemberMain from './Component/member/MemberMain';
 import AdminLogin from './Component/admin/AdminLogin';
 import MemberLogin from './Component/member/MemberLogin';
 import SurveyTitle from './Component/survey/SurveyTitle';
+import NoticeRead from './Component/NoticeRead';
+import MyVocRead from './Component/MyVocRead';
+import SurveyParicipate from './Component/survey/SurveyParicipate';
 
 
 function App() {
+  // 날짜 input 변경
+  const formatDate = (date) => {
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = '' + d.getFullYear();
+
+    if(month.length < 2){
+      month = '0' + month;
+    }
+    if(day.length < 2){
+      day = '0' + day;
+    }
+
+    return [year, month, day].join('-');
+  }
+
   return (
     
       <div>
@@ -51,12 +71,16 @@ function App() {
           <Route path="/myPoint" element={<HeaderAndFooter><MyPoint/></HeaderAndFooter>}/>
           <Route path="/myPointLog" element={<HeaderAndFooter><MyPointLog/></HeaderAndFooter>}/>
           <Route path="/mySurvey" element={<HeaderAndFooter><MySurvey/></HeaderAndFooter>}/>
-          <Route path='/myVOC' element={<HeaderAndFooter><MyVoc/></HeaderAndFooter>}/>
+          <Route path='/myVoc' element={<HeaderAndFooter><MyVoc/></HeaderAndFooter>}/>
+          <Route path="/myVoc/read/:vocId" element={<HeaderAndFooter><MyVocRead/></HeaderAndFooter>}/>
 
           {/** 고객센터 */}
           <Route path='/notice' element={<HeaderAndFooter><Notice/></HeaderAndFooter>}/>
+          <Route path='/notice/read/:id' element={<HeaderAndFooter><NoticeRead/></HeaderAndFooter>}/>
+
           <Route path="/faq" element={<HeaderAndFooter><Faq/></HeaderAndFooter>}/>
           <Route path="/voc" element={<HeaderAndFooter><Voc/></HeaderAndFooter>}/>
+          
 
           {/** 관리자 페이지 전체 */}
           <Route path="/admin/login" element={<AdminLogin/>}/>
@@ -68,6 +92,7 @@ function App() {
 
           {/** 설문조사 관련 전체 */}
           <Route path="/survey/title/:surveyId" element={<SurveyTitle/>}/>
+          <Route path="/survey/participate/:surveyId" element={<SurveyParicipate/>}/>
         </Routes>
       </div>
     

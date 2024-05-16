@@ -1,6 +1,7 @@
 // store.js
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import authReducer from './authSlice';
+import surveyReducer from './surveySlice';
 import { thunk } from 'redux-thunk';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
@@ -15,6 +16,7 @@ const persistConfig = {
 // 여러 리듀서를 병합
 const rootReducer = combineReducers({
   auth: authReducer,
+  survey: surveyReducer,
 });
 
 // 루트 리듀서를 persistReducer로 감싸기

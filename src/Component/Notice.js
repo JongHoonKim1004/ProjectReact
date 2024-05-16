@@ -1,8 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Col, Container, Row, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Notice = () => {
+  // useState
+  const [noticeList, setNoticeList] = useState([]);
+
+  // 공지사항 목록 호출
+  useEffect(() => {
+    const fetchNotice = async () => {
+      try{
+        const response = await fetch("//localhost:8080/notice/list");
+        if(!response.ok){
+          console.error("Network is not goot");
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setNoticeList(data);
+      }catch(error){
+        console.error("Fetch Error", error);
+      }
+    }
+
+    fetchNotice();
+  },[]);
+
+  // 날짜 input 변경
+const formatDate = (date) => {
+  const d = new Date(date);
+  let month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = '' + d.getFullYear();
+
+  if(month.length < 2){
+    month = '0' + month;
+  }
+  if(day.length < 2){
+    day = '0' + day;
+  }
+
+  return [year, month, day].join('-');
+}
+
   return (
     <div>
       <Container style={{ backgroundColor: "RGB(240, 240, 240)" }}>
@@ -32,15 +72,17 @@ const Notice = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr style={{borderTop: "1px solid #d8d8d8"}}>
-                        <td>1</td>
-                        <td>
-                          <Link to={'/notice/1'} style={{color: "black", textDecoration: "none"}}>
-                            공지사항 제목
-                          </Link>
-                        </td>
-                        <td>2024.04.26</td>
-                      </tr>
+                      {noticeList.map((notice, index) => (
+                        <tr style={{borderTop: "1px solid #d8d8d8"}} key={index}>
+                          <td>{notice.id}</td>
+                          <td>
+                            <Link to={'/notice/read/' + notice.id} style={{color: "black", textDecoration: "none"}}>
+                            {notice.title}
+                            </Link>
+                          </td>
+                          <td>{formatDate(notice.regDate)}</td>
+                        </tr>
+                      ))}
                       
                     </tbody>
                   </Table>

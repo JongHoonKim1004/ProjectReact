@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import ClassicEditor from '../ckeditor/build/ckeditor';
@@ -14,9 +14,22 @@ const Voc = () => {
   const dispatch = useDispatch();
   const {user, token} = useSelector(state => state.auth);
 
+  // 유저만 접근 가능하도록
+  useEffect(() => {
+    if(token == null) {
+      alert("로그인 후 이용해주세요");
+      navigation('/login');
+    }
+
+    if(token != null && user == null){
+      alert("일반회원만 이용 가능합니다");
+      navigation('/');
+    }
+  },[]);
+
   // useState
   const [title, setTitle] = useState("");
-  const [writer, setWriter] = useState(user.name);
+  const [writer, setWriter] = useState(user ? user.name : null);
   const [content, setContent] = useState("");
 
   // submit
@@ -40,7 +53,6 @@ const Voc = () => {
       title: title,
       writer: writer,
       content: content,
-      reply: false
     }
 
     // fetch
@@ -83,7 +95,7 @@ const Voc = () => {
               <Form.Group as={Row} className='mb-3' controlId='formTextTitle'>
                 <Form.Label column sm="2">제목</Form.Label>
                 <Col sm="10">
-                  <Form.Control name="title" id="title"></Form.Control>
+                  <Form.Control name="title" id="title" value={title} onChange={(e) => setTitle(e.target.value)}></Form.Control>
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className='mb-3' controlId='formTextWriter'>

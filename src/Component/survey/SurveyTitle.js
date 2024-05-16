@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Container, Form, Row, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { setQuestion } from '../../surveySlice';
 
 const SurveyTitle = () => {
   // useNavigate
@@ -12,10 +13,11 @@ const SurveyTitle = () => {
 
   // redux
   const dispatch = useDispatch();
-  const { user } = useSelector(state => state.auth);
+  const { user, token } = useSelector(state => state.auth);
+  const { survey } = useSelector(state => state.survey);
 
   // useState
-  const [survey, setSurvey] = useState({});
+  const [surveyObject, setSurvey] = useState({});
 
   // 날짜 input 변경
 const formatDate = (date) => {
@@ -53,6 +55,25 @@ const formatDate = (date) => {
 
     fetchSurvey()
   },[]);
+
+  // 설문시작하기를 누르면 설문의 질문 모두 가져오기
+  const handleCallSurvey = () => {
+    fetch(`//localhost:8080/survey/question/call/all/${surveyId}`,{
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "bearer " + token,
+      }
+    })
+    .then(response => response.json())
+    .then(result => {
+      console.log(result);
+      dispatch(setQuestion(result));
+
+      navigation(`/survey/participate/${surveyId}?currentIndex=0`);
+    })
+  }
+
   return (
     <div style={{backgroundColor: "RGB(235, 235, 235)", width: "950px", height: "740px"}}>
       <Row className='justify-content-md-center pt-5 mb-5'>
@@ -68,11 +89,11 @@ const formatDate = (date) => {
                     <tbody>
                       <tr>
                         <th style={{backgroundColor: "RGB(235, 235, 235)", width: "30%", paddingLeft: "20px"}}>조사명</th>
-                        <td style={{paddingLeft: "20px"}}>{survey.name}</td>
+                        <td style={{paddingLeft: "20px"}}>{surveyObject.name}</td>
                       </tr>
                       <tr>
                         <th style={{backgroundColor: "RGB(235, 235, 235)", width: "30%", paddingLeft: "20px"}}>조사기간</th>
-                        <td style={{paddingLeft: "20px"}}>{formatDate(survey.endDate) + " 까지"}</td>
+                        <td style={{paddingLeft: "20px"}}>{formatDate(surveyObject.endDate) + " 까지"}</td>
                       </tr>
                       <tr>
                         <th style={{backgroundColor: "RGB(235, 235, 235)", width: "30%", paddingLeft: "20px"}}>응답시간</th>
@@ -80,20 +101,18 @@ const formatDate = (date) => {
                       </tr>
                       <tr>
                         <th style={{backgroundColor: "RGB(235, 235, 235)", width: "30%", paddingLeft: "20px"}}>적립금</th>
-                        <td style={{paddingLeft: "20px"}}><span style={{color: "#225ce3", fontSize: "22px", fontWeight: "600"}}>{survey.point}</span> {" 원 (조사 완료시)"}</td>
+                        <td style={{paddingLeft: "20px"}}><span style={{color: "#225ce3", fontSize: "22px", fontWeight: "600"}}>{surveyObject.point}</span> {" 원 (조사 완료시)"}</td>
                       </tr>
                       <tr>
                         <th style={{backgroundColor: "RGB(235, 235, 235)", width: "30%", paddingLeft: "20px"}}></th>
-                        <td style={{paddingLeft: "20px"}}><span style={{color: "#225ce3", fontSize: "22px", fontWeight: "600"}}>{survey.pointAtLeast}</span> {" 원 (대상초과 혹은 대상이 아닌 경우)"}</td>
+                        <td style={{paddingLeft: "20px"}}><span style={{color: "#225ce3", fontSize: "22px", fontWeight: "600"}}>{surveyObject.pointAtLeast}</span> {" 원 (대상초과 혹은 대상이 아닌 경우)"}</td>
                       </tr>
                     </tbody>
                   </Table>
                 </Row>
                 <Row className='justify-content-md-center pt-3 pb-3'>
                   <Col md="4">
-                    <Link to={"/survey/paricipate" + survey.surveyId}  className='d-grid'>
-                      <Button variant='primary' size='lg' style={{fontSize: "16px"}}>조사참여하기</Button>
-                    </Link>
+                    <Button variant='primary' size='lg' style={{fontSize: "16px"}} onClick={() => handleCallSurvey()}>조사참여하기</Button>
                   </Col>
                 </Row>
                 <Row className='mt-3 mb-3'>
