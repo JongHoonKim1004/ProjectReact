@@ -107,7 +107,7 @@ const MyVoc = () => {
                               {voc.title}
                             </Link>
                           </td>
-                          <td></td>
+                          <td>{formatDate(voc.regDate)}</td>
                           <td>{voc.reply == 1 ? "답변완료" : "답변대기"}</td>
                         </tr>
                       ))}

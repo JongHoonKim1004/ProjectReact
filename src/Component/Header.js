@@ -4,18 +4,53 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import { clearToken } from "../authSlice";
+import { clearQuestion } from "../surveySlice";
 const Header = () => {
+
   const navigation = useNavigate();
+
   const dispatch = useDispatch();
   const {token, user, admin, member} = useSelector(state => state.auth);
+  const {question, currentIndex} = useSelector(state => state.survey);
 
   const handleLogout = (e) => {
     let checkLogout = confirm("정말로 로그아웃 하시겠습니까?");
     if(checkLogout){
       dispatch(clearToken());
+      dispatch(clearQuestion());
+      
       navigation('/', {replace: false});
     }
   }
+
+  // naver logout
+  const naverLogout = () => {
+    let checkLogout = confirm("정말로 로그아웃 하시겠습니까?");
+    if(checkLogout){
+      const URL = "https://nid.naver.com/oauth2.0/token?grant_type=delete";
+      const client_id = "3kmcSAzePM8TYBI6aCLw";
+      const client_secret = "nXTx_4PY7f";
+      const access_token = localStorage.getItem("accessToken");
+      const service_provider = "NAVER";
+//https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=jyvqXeaVOVmV&client_secret=527300A0_COq1_XV33cf&access_token=c8ceMEJisO4Se7uGCEYKK1p52L93bHXLnaoETis9YzjfnorlQwEisqemfpKHUq2gY&service_provider=NAVER
+      fetch(URL + "&client_id=" + client_id + "&client_secret=" + client_secret + "&access_token=" + access_token + "&service_provider=" + service_provider,{
+        method: "post",
+        headers: {
+          "Content-Type" : "application/json",
+        }
+      }).then(response => response.json())
+      .then(result => {
+        console.log(result);
+        if(result.result == "success"){
+          localStorage.removeItem("accessToken");
+          dispatch(clearToken());
+          navigation('/');
+        }
+      })
+    }
+  }
+
+
   return (
     <div className="mb-3 mt-1">
       <Container>
@@ -34,7 +69,7 @@ const Header = () => {
                 fontSize: "12px"
               }}>
                 {token ? (
-                  <Button variant="link" style={{textDecoration: "none", color: "#999", height: "16px", fontSize: "12px"}} className="p-0" onClick={handleLogout}>로그아웃</Button>
+                  localStorage.getItem("accessToken")  ? <Button variant="link" style={{textDecoration: "none", color: "#999", height: "16px", fontSize: "12px"}} className="p-0" onClick={naverLogout}>로그아웃</Button> : <Button variant="link" style={{textDecoration: "none", color: "#999", height: "16px", fontSize: "12px"}} className="p-0" onClick={handleLogout}>로그아웃</Button>
                 ) : (
                   <>
                     <Link style={{textDecoration: "none", color: "#999"}} to="/login">로그인</Link>

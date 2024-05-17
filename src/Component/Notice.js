@@ -1,30 +1,57 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Container, Row, Table } from 'react-bootstrap';
+import { Col, Container, Pagination, Row, Table } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
+
+
 
 const Notice = () => {
   // useState
-  const [noticeList, setNoticeList] = useState([]);
-
+  const [noticeList, setNoticeList] = useState({});
+  const [active, setActive] = useState(0);
   // 공지사항 목록 호출
   useEffect(() => {
-    const fetchNotice = async () => {
-      try{
-        const response = await fetch("//localhost:8080/notice/list");
-        if(!response.ok){
-          console.error("Network is not goot");
-        }
+    fetchNotice(active);
+  }, [active]);
 
-        const data = await response.json();
-        console.log(data);
-        setNoticeList(data);
-      }catch(error){
-        console.error("Fetch Error", error);
+  const fetchNotice = async (page) => {
+    try{
+      const response = await fetch(`//localhost:8080/notice/list/page/${page}`);
+      if(!response.ok){
+        console.error("Network is not goot");
       }
+
+      const data = await response.json();
+      console.log(data);
+      setNoticeList(data);
+    }catch(error){
+      console.error("Fetch Error", error);
+    }
+  }
+
+  // 공지사항 페이지 버튼 클릭
+  const handlePageChange = (pageNumber) => {
+    setActive(pageNumber);
+  };
+
+  // 페이지 버튼 출력
+  const renderPaginationItems = () => {
+    const items = [];
+    const totalPages = noticeList.totalPages;
+    const currentPage = noticeList.number;
+
+    const startPage = Math.max(0, currentPage - 2);
+    const endPage = Math.min(totalPages, startPage + 5);
+
+    for (let page = startPage; page < endPage; page++) {
+      items.push(
+        <Pagination.Item key={page} active={page === currentPage} onClick={() => handlePageChange(page)}>
+          {page + 1}
+        </Pagination.Item>
+      );
     }
 
-    fetchNotice();
-  },[]);
+    return items;
+  };
 
   // 날짜 input 변경
 const formatDate = (date) => {
@@ -72,7 +99,7 @@ const formatDate = (date) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {noticeList.map((notice, index) => (
+                      {Array.isArray(noticeList.content) ? noticeList.content.map((notice, index) => (
                         <tr style={{borderTop: "1px solid #d8d8d8"}} key={index}>
                           <td>{notice.id}</td>
                           <td>
@@ -82,10 +109,23 @@ const formatDate = (date) => {
                           </td>
                           <td>{formatDate(notice.regDate)}</td>
                         </tr>
-                      ))}
+                      )) : null}
                       
                     </tbody>
                   </Table>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                {noticeList.totalPages > 1 && (
+                  <Pagination>
+                    <Pagination.First onClick={() => handlePageChange(0)} />
+                    <Pagination.Prev onClick={() => handlePageChange(Math.max(0, active - 1))} />
+                    {renderPaginationItems()}
+                    <Pagination.Next onClick={() => handlePageChange(Math.min(noticeList.totalPages - 1, active + 1))} />
+                    <Pagination.Last onClick={() => handlePageChange(noticeList.totalPages - 1)} />
+                  </Pagination>
+                  )}
                 </Col>
               </Row>
             </div>

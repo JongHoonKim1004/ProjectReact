@@ -16,6 +16,7 @@ const surveySlice = createSlice({
     incrementIndex: (state) => {
       state.currentIndex += 1;
     },
+    
     clearQuestion: (state, action) => {
       state.question = null;
       state.currentIndex = 0;

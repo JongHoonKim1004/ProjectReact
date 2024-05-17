@@ -30,6 +30,7 @@ const SurveyParicipate = () => {
 
   // useState
   const [answer, setAnswer] = useState([]);
+  const [textAnswer, setTextAnswer] = useState("");
 
   // 질문 유형에 따른 answer 설정
   useEffect(() => {
@@ -64,7 +65,7 @@ const SurveyParicipate = () => {
           <Form>
             <Form.Group as={Row} className='pb-4 pt-4 justify-content-md-center'>
               <Col>
-                <Form.Control name="text" id={question.options[0].optionsId} type="text" value={answer} onChange={(e) => setAnswer(e.target.value)}/>
+                <Form.Control name="text" id={question.options[0].optionsId} type="text" value={textAnswer} onChange={(e) => setTextAnswer(e.target.value)}/>
               </Col>
             </Form.Group>
             <Form.Group as={Row} className='pb-4 justify-content-md-center'>
@@ -79,7 +80,7 @@ const SurveyParicipate = () => {
           <Form>
             <Form.Group as={Row} className='pb-4 pt-4 justify-content-md-center'>
               <Col>
-                <Form.Control name="number" id={question.options[0].optionsId} type="number" value={answer} onChange={(e) => setAnswer(e.target.value)}/>
+                <Form.Control name="number" id={question.options[0].optionsId} type="number" value={textAnswer} onChange={(e) => setTextAnswer(e.target.value)}/>
               </Col>
             </Form.Group>
             <Form.Group as={Row} className='pb-4 justify-content-md-center'>
@@ -133,17 +134,17 @@ const SurveyParicipate = () => {
     e.preventDefault();
     
     // 입력 확인
-    if(answer == null || answer == ""){
-      alert("질문에 답변해주세요.");
-      return false;
-    }
+    // if(answer == null || answer == ""){
+    //   alert("질문에 답변해주세요.");
+    //   return false;
+    // }
 
     // responseDTO 폼 만들기
     const responseDTO = {
       questionId: question[currentIndex].question.questionId,
       optionsId: question[currentIndex].question.questionType === 'text' ? [question[currentIndex].options[0].optionsId] : question[currentIndex].question.questionType === 'number' ? [question[currentIndex].options[0].optionsId] : answer, // 선택지를 배열로 전송
       usersId: user ? user.usersId : null, // 실제 사용자 ID로 대체
-      responseText: question[currentIndex].question.questionType === 'text' ? answer[0] : question[currentIndex].question.questionType === 'nunber' ? answer[0] : null,
+      responseText: question[currentIndex].question.questionType === 'text' ? textAnswer : question[currentIndex].question.questionType === 'number' ? textAnswer : null,
     };
 
     console.log(JSON.stringify(responseDTO));
@@ -165,12 +166,15 @@ const SurveyParicipate = () => {
       if (result && typeof result.isTerminated !== 'undefined') {
         if (result.isTerminated) {
           alert("설문이 종료되었습니다.");
+          navigation(`/survey/result?surveyId=${surveyId}&usersId=${user.usersId}&isTerminate=${result.isTerminated}`)
         } else {
           setAnswer([]);
           if (currentIndex < question.length - 1) {
+            setTextAnswer("");
             dispatch(incrementIndex());
           } else {
             alert("설문이 종료되었습니다.");
+            navigation(`/survey/result?surveyId=${surveyId}&usersId=${user.usersId}&isTerminate=${result.isTerminated}`)
           }
         }
       } else {

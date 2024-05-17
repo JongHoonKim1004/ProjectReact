@@ -91,32 +91,14 @@ const MemberSurveyRead = () => {
                     <th style={{textAlign: "center"}}>최대 지급 포인트</th>
                     <td>{survey.point}</td>
                   </tr>
-                </tbody>
-              </Table>
-            </Row>
-            <Row className='pt-5 mt-5'>
-              <Col>
-                <h3>이 설문조사를 참여한 사람들</h3>
-              </Col>
-            </Row>
-            <Row className='p-2 bg-white'>
-              <Table>
-                <thead>
                   <tr>
-                    <th>식별번호</th>
-                    <th>참가자</th>
-                    <th>참가일</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
+                    <th style={{textAlign: "center"}}>설문 참여 인원</th>
+                    <td>{survey.surveyParticipate}</td>
                   </tr>
                 </tbody>
               </Table>
             </Row>
+            
             <Row className='pt-5'>
               <Col md="7"></Col>
               <Col md="5">

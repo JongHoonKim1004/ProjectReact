@@ -151,6 +151,7 @@ const MyVocRead = () => {
                       </tbody>
                     </Table>
                   </Col>
+                  <hr></hr>
                 </Row>
               ))}
             </Container>

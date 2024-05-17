@@ -149,7 +149,8 @@ const MemberSurveyQuestion = () => {
         const response = await fetch(`http://localhost:8080/survey/question/create/${sno}`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `bearer ${token}`,
           },
           body: JSON.stringify(questionData)
         });

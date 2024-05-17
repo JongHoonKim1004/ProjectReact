@@ -17,6 +17,16 @@ const Login = () => {
   const [name, setName] = useState("");
   const [password,setPassword] = useState("");
 
+  // 네이버 설정
+  const NAVER_CLIENT_ID = "3kmcSAzePM8TYBI6aCLw";
+  const REDIRECT_URI = "http://localhost:8080/login/oauth/naver";
+  const STATE = "helloreact";
+  const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?client_id=${NAVER_CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&state=${STATE}`;
+
+  const naverLogin = () => {
+    window.open(NAVER_AUTH_URL, "_blank", "width=950, height=720, left=100, top=100")
+  }
+
   // 로그인 하고 접근하는지 확인
   useEffect(() => {
     if(admin != null || user != null || member != null){
@@ -181,6 +191,11 @@ const Login = () => {
                           src="/img/login/pwSearchBt_105x35.gif"
                         />
                       </button>
+                    </Form.Group>
+                    <Form.Group as={Row} className="mb-3">
+                      <Col sm="6">
+                        <button onClick={naverLogin} type="button">네이버 로그인</button>
+                      </Col>
                     </Form.Group>
                   </Form>
                 </Col>

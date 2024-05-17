@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Container, Form, Row, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { setQuestion } from '../../surveySlice';
+import { clearQuestion, setQuestion } from '../../surveySlice';
 
 const SurveyTitle = () => {
   // useNavigate
@@ -14,7 +14,7 @@ const SurveyTitle = () => {
   // redux
   const dispatch = useDispatch();
   const { user, token } = useSelector(state => state.auth);
-  const { survey } = useSelector(state => state.survey);
+  const { question, currentIndex } = useSelector(state => state.survey);
 
   // useState
   const [surveyObject, setSurvey] = useState({});
@@ -38,6 +38,22 @@ const formatDate = (date) => {
 
   // 설문 호출
   useEffect(() => {
+    // 유저 접근 여부 확인
+    if(token == null){
+      alert("로그인 후 이용 가능합니다");
+      window.close();
+      if (window.opener && !window.opener.closed) {
+        window.opener.location.href = "/login";
+      }
+    } else if(token && !user) {
+      alert("일반회원만 이용 가능합니다");
+      window.close();
+      if (window.opener && !window.opener.closed) {
+        window.opener.location.href = "/";
+      }
+    }
+    
+    // 확인 후 설문 메타데이터 호출
     const fetchSurvey = async () => {
       try{
         const response = await fetch(`//localhost:8080/survey/read/${surveyId}`);
@@ -58,6 +74,10 @@ const formatDate = (date) => {
 
   // 설문시작하기를 누르면 설문의 질문 모두 가져오기
   const handleCallSurvey = () => {
+    // 중간 참여 확인
+    if(question){
+      dispatch(clearQuestion());
+    }
     fetch(`//localhost:8080/survey/question/call/all/${surveyId}`,{
       method: "get",
       headers: {

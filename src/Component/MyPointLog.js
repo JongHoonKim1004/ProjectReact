@@ -1,7 +1,65 @@
-import React from 'react';
-import { Col, Container, Row, Table } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Button, Col, Container, Row, Table } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 
 const MyPointLog = () => {
+  // useNavigate
+  const navigation = useNavigate();
+
+  // redux
+  const { user, userPoint, token} = useSelector(state => state.auth);
+
+  // useState
+  const [logList, setLogList] = useState([]);
+
+  // 화면 호출시 초기 작업
+  useEffect(() => {
+    // 회원 확인 작업
+    if(token == null){
+      alert("로그인 후 이용 가능합니다.");
+      navigation('/login');
+    } else if(token != null && user == null){
+      alert("일반 회원만 이용 가능합니다");
+      navigation('/');
+    }
+
+    // 회원 확인 후에는 이력 호출
+    const fetchMyPointLog = async () => {
+      try{
+        const response = await fetch(`//localhost:8080/users/pointlog/list/${user.usersId}`);
+        if(!response.ok){
+          console.error("Network is not good");
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setLogList(data);
+      } catch(error){
+        console.error("Fetch Failed in MyPoint Log");
+      }
+
+    }
+
+    fetchMyPointLog();
+  },[]);
+
+  const formatDate = (date) => {
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = '' + d.getFullYear();
+
+    if(month.length < 2){
+      month = '0' + month;
+    }
+    if(day.length < 2){
+      day = '0' + day;
+    }
+
+    return [year, month, day].join('-');
+  }
+
   return (
     <div>
       <Container style={{ backgroundColor: "RGB(240, 240, 240)" }}>
@@ -43,21 +101,22 @@ const MyPointLog = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr style={{borderTop: "1px solid #d8d8d8"}}>
-                        <td>1</td>
-                        <td>패널 대상 조사</td>
-                        <td>50</td>
-                        <td>2024.04.26</td>
-                      </tr>
-                      <tr style={{borderTop: "1px solid #d8d8d8"}}>
-                        <td>1</td>
-                        <td>패널 대상 조사</td>
-                        <td>50</td>
-                        <td>2024.04.26</td>
-                      </tr>
+                      {logList.map((log, index) => (
+                        <tr style={{borderTop: "1px solid #d8d8d8"}} key={index}>
+                          <td>{log.logId}</td>
+                          <td>{log.changeType}</td>
+                          <td>{log.pointChange}</td>
+                          <td>{formatDate(log.changeDate)}</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </Table>
                 </Col>
+              </Row>
+              <Row className='pt-3 pb-3'>
+                <Link to="/myPoint">
+                  <Button variant='primary' size='sm'>이전 페이지로</Button>
+                </Link>
               </Row>
             </div>  
           </Col>

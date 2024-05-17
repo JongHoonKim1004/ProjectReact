@@ -1,13 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 
 const MyPoint = () => {
+  // useNavigate
+  const navigation = useNavigate();
+
+  // redux
+  const dispatch = useDispatch();
+  const { user, userPoint, token } = useSelector(state => state.auth);
+
+  // 로그인 확인
+  useEffect(() => {
+    if(token == null){
+      alert("로그인 후 이용 가능합니다");
+      navigation('/login');
+    } else if(token != null && user == null){
+      alert("일반회원만 이용 가능합니다");
+      navigation('/');
+    }
+
+  },[]);
+
   // 포인트 상태
-  const [pointTotal, setPointTotal] = useState(0);
-  const [pointUsed, setPointUsed] = useState(0);
+  const [pointTotal, setPointTotal] = useState(userPoint ? userPoint.pointTotal : null);
+  const [pointUsed, setPointUsed] = useState(userPoint ? userPoint.pointUsed : null);
   const [pointWaiting, setPointWaiting] = useState(0);
-  const [pointBalance, setPointBalance] = useState(0);
+  const [pointBalance, setPointBalance] = useState(userPoint ? userPoint.pointBalance : null);
+
+
   return (
     <div>
       <Container style={{ backgroundColor: "RGB(240, 240, 240)" }}>

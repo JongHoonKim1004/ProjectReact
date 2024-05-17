@@ -13,6 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { clearToken, setLoginType, setToken, setUser, setUserPoint } from "../authSlice";
 import jwt_decode from 'jwt-decode';
+import { clearQuestion } from "../surveySlice";
 
 
 const Main = () => {
@@ -22,6 +23,7 @@ const Main = () => {
   // redux 설정
   const dispatch = useDispatch();
   const {token, user, userPoint, admin, member, memberPoint} = useSelector(state => state.auth);
+  const {question, currentIndex} = useSelector(state => state.survey);
 
   // state
   const [name, setName] = useState("");
@@ -34,7 +36,7 @@ const Main = () => {
     const fetchSurvey = async () => {
       try{
         const response = await fetch("//localhost:8080/survey/list/active");
-        const response2 = await fetch("//localhost:8080/notice/list");
+        const response2 = await fetch("//localhost:8080/notice/list/formain");
         if(!response.ok || !response2.ok){
           console.error("Network is not good");
         }
@@ -135,6 +137,7 @@ const formatDate = (date) => {
     let checkLogout = confirm("정말로 로그아웃 하시겠습니까?");
     if(checkLogout){
       dispatch(clearToken());
+      dispatch(clearQuestion());
       navigation('/', {replace: false});
     }
   }
@@ -440,13 +443,13 @@ const formatDate = (date) => {
                   </Col>
                 </Row>
                 <Row>
-                  {noticeList.map((notice, index) => (
+                  {Array.isArray(noticeList.content) ? noticeList.content.map((notice, index) => (
                     <Col sm="12" key={index} className="pb-1">
                       <Link to={"/notice/read/" + notice.id} style={{textDecoration: "none", color: "#111"}}>
                         {notice.title}
                       </Link>
                     </Col>
-                  ))}
+                  )) : null}
                   
                 </Row>
               </Col>

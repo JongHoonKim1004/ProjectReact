@@ -1,7 +1,68 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Col, Container, Row, Table } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const MySurvey = () => {
+  // navigate
+  const navigate = useNavigate();
+
+  // redux
+  const {user, token} = useSelector(state => state.auth);
+
+  // useState
+  const [surveyList, setSurveyList] = useState([]);
+
+  // 유저 확인 및 조사 관리 호출
+  useEffect(() => {
+    // 유저 확인
+    if(!token){
+      alert("로그인 후 이용 가능합니다");
+      navigate('/login');
+      return;
+    } else if(token && !user){
+      alert("일반회원만 이용 가능합니다.");
+      navigate('/');
+      return;
+    }
+
+    // 서버 요청
+    const fetchMySurvey = async () => {
+      try{
+        const response = await fetch(`//localhost:8080/users/survey/${user.usersId}`);
+        if(!response.ok){
+          console.error("Network is not good");
+        }
+        
+        const data = await response.json();
+        console.log(data);
+        setSurveyList(data);
+      } catch(error){
+        console.error("Fetch Failed in MySurvey");
+      }
+    }
+
+    fetchMySurvey();
+  },[]);
+
+  // 날짜 input 변경
+  const formatDate = (date) => {
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = '' + d.getFullYear();
+
+    if(month.length < 2){
+      month = '0' + month;
+    }
+    if(day.length < 2){
+      day = '0' + day;
+    }
+
+    return [year, month, day].join('-');
+  }
+
+
   return (
     <div>
       <Container style={{ backgroundColor: "RGB(240, 240, 240)" }}>
@@ -42,16 +103,13 @@ const MySurvey = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr style={{borderTop: "1px solid #d8d8d8"}}>
-                        <td>1</td>
-                        <td>패널 대상 조사</td>
-                        <td>2024.04.26</td>
-                      </tr>
-                      <tr style={{borderTop: "1px solid #d8d8d8"}}>
-                        <td>1</td>
-                        <td>패널 대상 조사</td>
-                        <td>2024.04.26</td>
-                      </tr>
+                      {surveyList.map((survey, index) => (
+                        <tr style={{borderTop: "1px solid #d8d8d8"}} key={index}>
+                          <td>{survey.logId}</td>
+                          <td>{survey.surveyId}</td>
+                          <td>{formatDate(survey.surveyDate)}</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </Table>
                 </Col>

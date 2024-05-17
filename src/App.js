@@ -29,6 +29,8 @@ import SurveyTitle from './Component/survey/SurveyTitle';
 import NoticeRead from './Component/NoticeRead';
 import MyVocRead from './Component/MyVocRead';
 import SurveyParicipate from './Component/survey/SurveyParicipate';
+import SurveyResult from './Component/survey/SurveyResult';
+import NaverLoginDirect from './Component/social/NaverLoginDirect';
 
 
 function App() {
@@ -93,6 +95,10 @@ function App() {
           {/** 설문조사 관련 전체 */}
           <Route path="/survey/title/:surveyId" element={<SurveyTitle/>}/>
           <Route path="/survey/participate/:surveyId" element={<SurveyParicipate/>}/>
+          <Route path='/survey/result' element={<SurveyResult/>}/>
+
+          {/** 소셜로그인 */}
+          <Route path='/login/oauth/naver' element={<NaverLoginDirect/>}/>
         </Routes>
       </div>
     
