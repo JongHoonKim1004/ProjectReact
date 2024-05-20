@@ -22,7 +22,7 @@ const Main = () => {
 
   // redux 설정
   const dispatch = useDispatch();
-  const {token, user, userPoint, admin, member, memberPoint} = useSelector(state => state.auth);
+  const {token, user, userPoint, admin, member, memberPoint, loginType} = useSelector(state => state.auth);
   const {question, currentIndex} = useSelector(state => state.survey);
 
   // state
@@ -142,6 +142,28 @@ const formatDate = (date) => {
     }
   }
 
+  // naver logout
+  const naverLogout = () => {
+    let checkLogout = confirm("정말로 로그아웃 하시겠습니까?");
+    if(checkLogout){
+      const accessToken = localStorage.getItem("accessToken");
+      window.open(`//localhost:8080/logout/oauth/naver?access_token=${accessToken}`, "_blank", "width=500, height=500, top=100, left=100")
+      }
+  }
+
+  // google logout
+  const googleLogout = () => {
+    let checkLogout = confirm("정말로 로그아웃 하시겠습니까?");
+    if(checkLogout){
+      localStorage.removeItem("accessToken");
+      dispatch(clearToken());
+      dispatch(clearQuestion());
+      
+
+      navigation('/', {replace: false});
+    }
+  }
+
   return (
     <div>
       <Container>
@@ -238,12 +260,27 @@ const formatDate = (date) => {
                             >회원정보 변경</Button>
                             )}
                           </Col>
+                          {loginType == 'naver'? 
                           <Col className="d-grid">
-                            <Button 
-                              variant="danger"
-                              onClick={handleLogout}
-                            >로그아웃</Button>
-                          </Col>
+                          <Button 
+                            variant="danger"
+                            onClick={naverLogout}
+                          >로그아웃</Button>
+                        </Col>
+                        : loginType == 'google' ?
+                        <Col className="d-grid">
+                          <Button 
+                            variant="danger"
+                            onClick={googleLogout}
+                          >로그아웃</Button>
+                        </Col>
+                        : 
+                          <Col className="d-grid">
+                          <Button 
+                            variant="danger"
+                            onClick={handleLogout}
+                          >로그아웃</Button>
+                        </Col>}
                         </Row>
                       </Col>
                     </Row>

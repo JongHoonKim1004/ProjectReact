@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Accordion, Button, Col, Form, InputGroup, Row } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const MemberSurveyQuestion = () => {
@@ -8,6 +9,9 @@ const MemberSurveyQuestion = () => {
 
   // surveyId 설정
   const {sno} = useParams();
+
+  // redex 
+  const {token} = useSelector(state => state.auth);
 
   // state 설정
   const [questions, setQuestions] = useState([
@@ -32,10 +36,30 @@ const MemberSurveyQuestion = () => {
       ],
       isSaved: false, // 저장된 상태인지 확인
       isTemporary: true, // 아직 서버로 보내지지 않았다면 true, 서버로 보내진 적이 있다면 false
+    }]);
+  const [survey, setSurvey] = useState({});
+
+  useEffect(() => {
+    const fetchMemberSurveyQuestion = async () => {
+      try{
+        const response = await fetch(`//localhost:8080/survey/read/${sno}`);
+        if(!response.ok){
+          console.error("Network is not good");
+        }
+
+          const data = await response.json();
+
+          console.log(data);
+
+          setSurvey(data);
+      } catch(error){
+        console.error("Fetch Error in Member Survey Question");
+      }
+
     }
-  ]);
-  
-  // 비정상 방법으로 페이지 이동 시
+
+    fetchMemberSurveyQuestion();
+  },[sno]);
 
 
   // 질문 내용 변경시 함수
@@ -150,7 +174,7 @@ const MemberSurveyQuestion = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `bearer ${token}`,
+            "Authorization": "bearer " + token,
           },
           body: JSON.stringify(questionData)
         });
@@ -294,6 +318,12 @@ const MemberSurveyQuestion = () => {
         <Col md="8">
           <Row className="p-5 bg-white">
             <Col>
+              <Row className='pb-3'>
+                <Col>
+                  <h3>{survey.name}</h3>
+                  <p style={{fontSize: "14px"}}>설문 작성중에 사이트를 떠나실 경우 설문 작성이 중간에 종료됩니다</p>
+                </Col>
+              </Row>
               <Row className='justify-content-end pb-5'>
                 <Col sm="2">
                   <Button variant='primary' onClick={addQuestion}>새 질문 생성</Button>

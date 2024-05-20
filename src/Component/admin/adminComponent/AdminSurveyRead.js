@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Row, Table } from 'react-bootstrap';
+import { Accordion, Button, Col, Row, Table } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
@@ -12,6 +12,7 @@ const AdminSurveyRead = () => {
 
   // useState
   const [survey, setSurvey] = useState({});
+  const [questionList , setQuestionList] = useState([]);
 
   // redux
   const { token } = useSelector(state => state.auth);
@@ -21,13 +22,18 @@ const AdminSurveyRead = () => {
     const fetchAdminSurveyRead = async () => {
       try{
         const response = await fetch(`//localhost:8080/survey/read/${surveyId}`);
+        const response2 = await fetch(`//localhost:8080/survey/question/call/all/${surveyId}`);
         if(!response.ok){
           console.error("Network is not good");
         }
 
         const data = await response.json();
+        const data2 = await response2.json();
         console.log(data);
+        console.log(data2);
+        
         setSurvey(data);
+        setQuestionList(data2);
       } catch(error){
         console.error("Fetch Failed in Admin Survey Read");
       }
@@ -55,8 +61,8 @@ const AdminSurveyRead = () => {
 
   // 삭제 요청
   const handleDeleteSurvey = () => {
-    let confirm = confirm("정말 삭제하시겠습니까?");
-    if(confirm){
+    let check = confirm("정말 삭제하시겠습니까?");
+    if(check){
       fetch(`//localhost:8080/survey/delete/${surveyId}`,{
         method: "post",
         headers: {
@@ -138,6 +144,37 @@ const AdminSurveyRead = () => {
                 <Button className='mx-3'>목록으로</Button>
               </Link>
               <Button variant='danger' onClick={handleDeleteSurvey}>삭제하기</Button>
+            </Col>
+          </Row>
+          <Row className='pt-5'>
+            <Col>
+              <Accordion>
+                {Array.isArray(questionList) ? 
+                questionList.map((question, index) => (
+                  <Accordion.Item key={index} eventKey={index}>
+                    <Accordion.Header>{question.question.question}</Accordion.Header>
+                    <Accordion.Body>
+                      <p>질문 유형 : {question.question.questionType}</p>
+                      <p>응답 유형 : {question.question.optionsType}</p>
+                      <hr></hr>
+                      <h6 style={{fontSize: "12px"}}>질문 유형이 text 나 number 인 경우 '1 - options' 가 출력됩니다</h6>
+                      <Table>
+                        <tbody>
+                          {Array.isArray(question.options) ? 
+                            question.options.map((option, i) => (
+                              <tr key={i}>
+                                <th>{option.optionsNumber}</th>
+                                <td>{option.options}&nbsp;&nbsp;<span style={{fontSize: "14px", color: "salmon"}}>{option.terminate ? "(조기종료)": null}</span></td>
+                              </tr>
+                            ))
+                        : null}
+                        </tbody>
+                      </Table>
+                    </Accordion.Body>
+                  </Accordion.Item>
+                ))
+                : null}
+              </Accordion>
             </Col>
           </Row>
         </Col>

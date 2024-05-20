@@ -24,8 +24,16 @@ const Login = () => {
   const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?client_id=${NAVER_CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&state=${STATE}`;
 
   const naverLogin = () => {
-    window.open(NAVER_AUTH_URL, "_blank", "width=950, height=720, left=100, top=100")
+    window.open(NAVER_AUTH_URL, "_blank", "width=950, height=720, left=100, top=100");
   }
+
+  // 구글 설정
+  const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth?scope=email profile&redirect_uri=http://localhost:8080/login/oauth/google&response_type=code&client_id="
+  const GOOGLE_CLIENT_ID = "151101852629-rag7pn75fia742c4m0uo31eaog2e0iq3.apps.googleusercontent.com";
+  const googleLogin = () => {
+    window.open(GOOGLE_AUTH_URL + GOOGLE_CLIENT_ID, "_blank", "width=950, height=720, left=100, top=100");
+  }
+
 
   // 로그인 하고 접근하는지 확인
   useEffect(() => {
@@ -176,6 +184,7 @@ const Login = () => {
                           border: 0,
                           marginRight: "5px",
                         }}
+                        onClick={() => navigation('/idFind')}
                       >
                         <img
                           alt="idFind"
@@ -185,6 +194,7 @@ const Login = () => {
                       <button
                         type="button"
                         style={{ width: "auto", padding: 0, border: 0 }}
+                        onClick={() => navigation('/pwFind')}
                       >
                         <img
                           alt="pwFind"
@@ -194,7 +204,10 @@ const Login = () => {
                     </Form.Group>
                     <Form.Group as={Row} className="mb-3">
                       <Col sm="6">
-                        <button onClick={naverLogin} type="button">네이버 로그인</button>
+                        <img alt="naver login" src="/img/social/btnG_naver1.png" style={{width: "170px", cursor: "pointer", height: "45px"}}  onClick={naverLogin} />
+                      </Col>
+                      <Col sm="6">
+                        <img alt="google login" src="/img/social/web_light_sq_ctn@1x.png" style={{width: "170px", cursor: "pointer", height: "45px"}} onClick={googleLogin}/>
                       </Col>
                     </Form.Group>
                   </Form>

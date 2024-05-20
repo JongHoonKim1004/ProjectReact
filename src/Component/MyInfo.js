@@ -8,7 +8,7 @@ import { setUser } from "../authSlice";
 
 const MyInfo = () => {
   // useNavigate
-  const navigation = useNavigate();
+  const navigate = useNavigate();
 
   // redux 설정
   const dispatch = useDispatch();
@@ -132,6 +132,7 @@ const MyInfo = () => {
     }
 
     let users = {
+      usersId: user.userId,
       name: username,
       nickname: name,
       password: password,
@@ -142,11 +143,13 @@ const MyInfo = () => {
       birth: birth || null,
       gender: gender || null,
       occupation: occupation || null,
-      married
+      married : married || null,
     }
 
+    console.log(users);
+
     try {
-      const response = await fetch(`http://localhost:8080/users/update/${user.userId}`, {
+      const response = await fetch(`http://localhost:8080/users/update/${user.usersId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

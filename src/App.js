@@ -31,6 +31,12 @@ import MyVocRead from './Component/MyVocRead';
 import SurveyParicipate from './Component/survey/SurveyParicipate';
 import SurveyResult from './Component/survey/SurveyResult';
 import NaverLoginDirect from './Component/social/NaverLoginDirect';
+import NaverLogoutResult from './Component/social/NaverLogoutResult';
+import GoogleLoginDirect from './Component/social/GoogleLoginDirect';
+import EmailFind from './Component/EmailFind';
+import EmailFindResult from './Component/EmailFindResult';
+import PasswordFind from './Component/PasswordFind';
+import PasswordChange from './Component/PasswordChange';
 
 
 function App() {
@@ -63,6 +69,12 @@ function App() {
           <Route path="/register_terms" element={<HeaderAndFooter><Register_terms/></HeaderAndFooter>}/>
           <Route path='/register_forms' element={<HeaderAndFooter><Register_forms/></HeaderAndFooter>}/>
           <Route path="/register_result" element={<HeaderAndFooter><Register_result/></HeaderAndFooter>}/>
+
+          {/** 아이디, 비밀번호 찾기 */}
+          <Route path='/idFind' element={<HeaderAndFooter><EmailFind/></HeaderAndFooter>}/>
+          <Route path='/idFind/result' element={<HeaderAndFooter><EmailFindResult/></HeaderAndFooter>}/>
+          <Route path='/pwFind' element={<HeaderAndFooter><PasswordFind/></HeaderAndFooter>}/>
+          <Route path='/pwChange' element={<HeaderAndFooter><PasswordChange/></HeaderAndFooter>}/>
 
           {/** 회원가입 폼 내 아이디 중복확인, 주소 api */}
           <Route path="/idCheck" element={<UsernameCheck/>}/>
@@ -99,6 +111,9 @@ function App() {
 
           {/** 소셜로그인 */}
           <Route path='/login/oauth/naver' element={<NaverLoginDirect/>}/>
+          <Route path='/logout/oauth/naver' element={<NaverLogoutResult/>}/>
+
+          <Route path='/login/oauth/google' element={<GoogleLoginDirect/>}/>
         </Routes>
       </div>
     

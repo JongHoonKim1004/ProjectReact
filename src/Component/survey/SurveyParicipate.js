@@ -186,17 +186,7 @@ const SurveyParicipate = () => {
       alert("답변 제출 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   }
-
-  const printDTO = () => {
-    const responseDTO = {
-      questionId: question[currentIndex].question.questionId,
-      optionsId: question[currentIndex].question.questionType === 'text' ? [question[currentIndex].options[0].optionsId] : question[currentIndex].question.questionType === 'number' ? [question[currentIndex].options[0].optionsId] : answer, // 선택지를 배열로 전송
-      usersId: user ? user.usersId : null, // 실제 사용자 ID로 대체
-      responseText: question[currentIndex].question.questionType === 'text' ? document.getElementsByName("text").value : question[currentIndex].question.questionType === 'nunber' ? document.getElementsByName("number").value : null,
-    };
-
-    console.log(JSON.stringify(responseDTO));
-  }
+  
   return (
     <div style={{backgroundColor: "RGB(235, 235, 235)", width: "950px", height: "740px"}}>
       <Row className='justify-content-md-center pt-5 mb-5'>
@@ -232,11 +222,7 @@ const SurveyParicipate = () => {
             </Card>
             ) : null}
           </Row>
-          <Row>
-            <Col>
-              <Button onClick={printDTO}>test</Button>
-            </Col>
-          </Row>
+          
         </Col>
       </Row>
     </div>

@@ -23,8 +23,18 @@ const MemberInfoModify = () => {
   const [addr, setAddr] = useState(member.addr);
   const [addrDetail, setAddrDetail] = useState(member.addrDetail);
 
-  // 본인 정보 호출 후 state 에 저장
-  
+  // 다음 주소 api 호출
+  window.getAddr = (data) => {
+    setAddr(data.address);
+    setZipNo(data.zonecode);
+
+    console.log(data);
+  }
+
+  const findZipNo = (e) => {
+    window.open(`../addressSearch`,"_blank","width=700, height=500, left=100, top=100")
+    
+  }
 
   // 제출 요청 처리
   const handleSubmit = (e) => {
@@ -86,7 +96,7 @@ const MemberInfoModify = () => {
                 <Form.Control name="zipNo" value={zipNo} onChange={(e) => setZipNo(e.target.value)} readOnly/>
               </Col>
               <Col sm="6">
-                <Button variant="primary" >우편번호 찾기</Button>
+                <Button variant="primary" onClick={findZipNo}>우편번호 찾기</Button>
               </Col>
             </Form.Group>
             <Form.Group as={Row} className="mb-3">
