@@ -8,7 +8,7 @@ const MemberInfoModify = () => {
   const navigation = useNavigate();
 
   // redux
-  const { member } = useSelector(state => state.auth);
+  const { member, token } = useSelector(state => state.auth);
   const dispatch = useDispatch();
 
   // state 설정
@@ -39,7 +39,45 @@ const MemberInfoModify = () => {
   // 제출 요청 처리
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // 입력 검증
+    if(name == "" || compNo == "" || nickname == "" || password == "" || passwordCheck == "" || phone == "" || zipNo == "" || addr == "" || addrDetail == ""){
+      alert("필수항목을 전부 입력해주세요");
+      return;
+    }
+    if(password != passwordCheck){
+      alert("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    let member = {
+      memberId : memberId,
+      name: name,
+      nickname: nickname,
+      password: password,
+      phone: phone,
+      zipNo: zipNo,
+      addr: addr,
+      addrDetail: addrDetail,
+      compNo: compNo
+    }
+
+    fetch(`//localhost:8080/member/update/${member.memberId}`,{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "bearer " + token,
+      },
+      body: JSON.stringify(member),
+    }).then(response => response.text())
+    .then(result => {
+      if(result == "Member Updated"){
+        alert(result);
+        navigation("/member");
+      }
+    })
   }
+
   return (
     <main className="p-5">
       <div style={{ padding: "16px 24px", color: "#44596e" }}>

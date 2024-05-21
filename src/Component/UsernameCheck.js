@@ -66,7 +66,7 @@ const UsernameCheck = () => {
               <Col sm="10">
                 <Row style={{justifyContent: "center"}}>
                   <Col sm="6">
-                    <Form.Control type='text' name="username" value={username} onChange={handleUsername}/>
+                    <Form.Control type='text' name="username" value={username} onChange={handleUsername} autoComplete="off"/>
                   </Col>  
                   <Col sm="4">
                     <Button varinat="secondary" onClick={changeIdCheck} size='sm'>중복 확인</Button>

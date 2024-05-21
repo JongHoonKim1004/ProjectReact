@@ -135,6 +135,7 @@ const Login = () => {
                           id="username"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
+                          autoComplete="off"
                         />
                       </Col>
                     </Form.Group>

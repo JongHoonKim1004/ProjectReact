@@ -204,7 +204,7 @@ const SurveyParicipate = () => {
                   </Col>
                 </Row>
                 <Row>
-                  <Col>
+                  <Col sm="3">
                     <span
                       style={{float: "right", fontSize: "12px", textAlign: "right", lineHeight: "30px", backgroundColor: "#225ce3", color: "white", borderRadius: "5px 5px 0 0"}}
                       className='px-3'

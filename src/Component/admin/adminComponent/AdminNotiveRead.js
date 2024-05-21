@@ -93,7 +93,7 @@ const AdminNotiveRead = () => {
             <Row className='pt-5'>
               <Col md="7"></Col>
               <Col md="5">
-                <Link to={'/admin/users/list'}>
+                <Link to={'/admin/notice/list'}>
                   <Button className='mx-5'>목록으로</Button>
                 </Link>
                 <Button variant='danger' onClick={deleteNotice}>공지 삭제하기</Button>

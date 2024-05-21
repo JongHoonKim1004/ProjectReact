@@ -88,7 +88,7 @@ const PasswordFind = () => {
                   <Form.Group as={Row} className="mb-5">
                     <Form.Label column sm="3">이름</Form.Label>
                     <Col sm="9">
-                      <Form.Control value={name} onChange={(e) => setName(e.target.value)} autoComplete='off' readOnly={codeChecked}/>
+                      <Form.Control value={name} onChange={(e) => setName(e.target.value)} autoComplete='off' readOnly={sendCode}/>
                     </Col>
                   </Form.Group>
                   <Form.Group>

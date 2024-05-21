@@ -65,6 +65,7 @@ const Register_forms = () => {
   // 새로 연 창에서 데이터 받을 수 있도록 설정
   window.usernameCheck = (username) => {
     setUsernameChecked(username);
+    setUsername(username);
     console.log("Username Checked : ", username);
   }
   window.getAddr = (data) => {
@@ -187,7 +188,7 @@ const Register_forms = () => {
               <Form.Group as={Row} className='mt-3 mb-3'>
                 <Form.Label column sm="3">아이디 {`(`}이메일{`)`} {`*`}</Form.Label>
                 <Col sm="9">
-                  <Form.Control type='email' name="username" id="username" placeholder='example@example.com' value={username} onChange={handleUsername}/>
+                  <Form.Control type='email' name="username" id="username" placeholder='example@example.com' value={username} onChange={handleUsername} autoComplete="off"/>
                 </Col>
               </Form.Group>
               <Form.Group className='mb-5' as={Row}>
@@ -199,7 +200,7 @@ const Register_forms = () => {
               <Form.Group as={Row} className='mb-3 mt-1'>
                 <Form.Label column sm="3">이름 {`*`}</Form.Label>
                 <Col sm="9">
-                  <Form.Control name="name" id="name" value={name} onChange={handleName}/>
+                  <Form.Control name="name" id="name" value={name} onChange={handleName} autoComplete="off"/>
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className='mb-3'>
@@ -217,7 +218,7 @@ const Register_forms = () => {
               <Form.Group as={Row} className='mb-3'>
                 <Form.Label column sm="3">연락처 {`*`}</Form.Label>
                 <Col sm="9">
-                  <Form.Control name="phone" id="phone" value={phone} onChange={handlePhone}/>
+                  <Form.Control name="phone" id="phone" value={phone} onChange={handlePhone} autoComplete="off"/>
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className='mb-3 pt-5'>
@@ -238,7 +239,7 @@ const Register_forms = () => {
               <Form.Group as={Row} className='mb-3'>
                 <Form.Label column sm="3">상세주소 {`*`}</Form.Label>
                 <Col sm="9">
-                  <Form.Control name="addrDetail" id="addrDetail" value={addrDetail} onChange={handleAddrDetail}/>
+                  <Form.Control name="addrDetail" id="addrDetail" value={addrDetail} onChange={handleAddrDetail} autoComplete="off"/>
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className='mb-3 mt-2'>

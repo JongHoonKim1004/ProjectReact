@@ -149,7 +149,7 @@ const MemberSurveyTitle = () => {
               <Form.Group as={Row} className='mb-3'>
                 <Form.Label column sm="3">설문조사명</Form.Label>
                 <Col sm="9">
-                  <Form.Control name="name" id="name" value={name} onChange={(e) => setName(e.target.value)}/>
+                  <Form.Control name="name" id="name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="off"/>
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className="mb-3">

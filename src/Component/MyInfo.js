@@ -199,7 +199,7 @@ const MyInfo = () => {
               <Form.Group as={Row} className='mt-3 mb-3'>
                 <Form.Label column sm="3">회원번호</Form.Label>
                 <Col sm="9">
-                  <Form.Control type='text' name="usersId" id="usersId" readOnly plaintext value={user ? user.userId : null} />
+                  <Form.Control type='text' name="usersId" id="usersId" readOnly plaintext value={user ? user.usersId : null} />
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className='mt-3 mb-3'>

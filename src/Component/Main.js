@@ -302,6 +302,7 @@ const formatDate = (date) => {
                             placeholder="example@example.com"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
+                            autoComplete="no"
                           />
                         </Col>
                       </Form.Group>

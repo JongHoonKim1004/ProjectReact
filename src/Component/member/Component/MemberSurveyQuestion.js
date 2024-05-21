@@ -426,6 +426,7 @@ const MemberSurveyQuestion = () => {
                                           value={option.options}
                                           onChange={(e) => handleOptionsChange(question.id, option.optionsNumber, e.target.value)}
                                           disabled={question.isSaved}
+                                          autoComplete="off"
                                         />
                                         <InputGroup.Checkbox
                                           name="terminate"
@@ -452,6 +453,7 @@ const MemberSurveyQuestion = () => {
                                           value={option.options}
                                           onChange={(e) => handleOptionsChange(question.id, option.optionsNumber, e.target.value)}
                                           disabled={question.isSaved}
+                                          autoComplete="off"
                                         />
                                         <InputGroup.Checkbox
                                           name="terminate"
