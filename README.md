@@ -26,7 +26,7 @@
   ## 🔧 기술 스택
   - API : `다음 주소 API`, `PORTONE API`, `네이버 API`, `Google API`, `CKEditor`
   - Language : `Java(17)`, `JavaScript(ES6)`
-  - Library & Framework : `Spring Boot(3.1.11)`, `React(18.3.0)`, `Spring Data JPA(3.1.11)`, `Spring Security(6.1.9)`, `JJWT(0.12.5)`
+  - Library & Framework : `Spring Boot(3.1.11)`, `React(18.3.0)`, `Redux(9.1.2)`, `Spring Data JPA(3.1.11)`, `Spring Security(6.1.9)`, `JJWT(0.12.5)`
   - Database : `MySQL(8.0)`
   - Target : `Web Browser`
 
