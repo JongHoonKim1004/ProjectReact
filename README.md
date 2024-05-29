@@ -1,4 +1,7 @@
-<h1 align="center"><img src="https://www.panel.co.kr/user/img/h_logo.gif" style="width: 300px; height: 100px">&nbsp;
+<h1 align="center">
+
+  ![ppt_PS_01](https://github.com/JongHoonKim1004/ProjectReact/assets/155927559/bfd8a1e1-39c4-4adc-bda6-cf7682c60a88)
+
   </h1>
   <h1 align="center">스프링부트 + 리액트 온라인 설문조사 프로젝트</h1>
   <h3 align="center"><a href="https://github.com/JongHoonKim1004/Project_Survey">스프링부트 페이지</a> 는 이쪽으로</h3>
