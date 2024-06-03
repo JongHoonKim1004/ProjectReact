@@ -37,7 +37,7 @@
   - ETC : `Git`
 
   ## 👾 프로젝트 설계, 구현 📂 PPT 📂 (ERD, USECASE)
-<details><summary>프로젝트 설계, 구현, PPT</summary>
+프로젝트 설계, 구현, PPT
   
 <div align="center">
     
@@ -79,7 +79,7 @@
 | ![Project_Survey_PPT_69](https://github.com/JongHoonKim1004/Project_Survey/assets/155927559/2f3c0f96-90f8-4553-b3e5-8c2a9ad2fbff) | |
 
 </div>
-</details>
+
 
 ## 💻 핵심 기능
 
@@ -110,8 +110,7 @@
 - 일반회원, 사업자 관리
 
 ## 🎇 주요기능 실행화면
-<details>
-  <summary>주요기능 실행화면</summary>
+주요기능 실행화면
 
   * **메인 페이지**
 
@@ -218,7 +217,7 @@
      
       ![PS_16_AdminFAQ](https://github.com/JongHoonKim1004/Project_Survey/assets/155927559/3936fb19-c42b-4948-bd6b-17c2985b67a8)
 
-</details> 
+
 
 ## 🌄 개선사항
 - 일반회원의 설문조사 참여에 관한 알고리즘 구성
